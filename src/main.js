@@ -9,28 +9,8 @@ import { registerScrollSpy } from 'vue3-scroll-spy';
 
 import Maska from 'maska'
 import { i18n } from "./i18n.js"
-import { initFirebaseBackend } from './authUtils'
-import { configureFakeBackend } from './helpers/fake-backend';
 import PageLoading from "@/components/page-loading";
 
-
-
-const firebaseConfig = {
-    apiKey: process.env.VUE_APP_APIKEY,
-    authDomain: process.env.VUE_APP_AUTHDOMAIN,
-    databaseURL: process.env.VUE_APP_VUE_APP_DATABASEURL,
-    projectId: process.env.VUE_APP_PROJECTId,
-    storageBucket: process.env.VUE_APP_STORAGEBUCKET,
-    messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
-    appId: process.env.VUE_APP_APPId,
-    measurementId: process.env.VUE_APP_MEASUREMENTID
-};
-
-if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
-    initFirebaseBackend(firebaseConfig);
-} else {
-    configureFakeBackend();
-}
 
 import 'sweetalert2/dist/sweetalert2.min.css';
 import '@vueform/slider/themes/default.css';
