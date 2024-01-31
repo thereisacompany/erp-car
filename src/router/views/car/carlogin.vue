@@ -68,7 +68,23 @@ export default {
   },
   methods: {
 
+    TEST() {
+      // /frontend/depotHead/list
+      let APIUrl = `/frontend/depotHead/list`;
 
+      let APIParameter = `?currentPage=1&pageSize=30`;
+      let queryStr = `{"type":"出庫","number":"","MNumber":"","materialParam":"","organId":"","beginTime":"","endTime":"","depotId":"","keyword":""}`;
+      APIParameter += `&search=${encodeURIComponent(queryStr)}`;
+      server.get(APIUrl + APIParameter)
+        .then((res) => {
+          if (res != null && res.data != null && res.status == 200) {
+            let jshdata = res.data;
+            console.log(jshdata)
+          }
+        }).catch(function (error) {
+          console.log("error", error);
+        });
+    },
     tryToLogIn() {
 
 
@@ -87,6 +103,7 @@ export default {
             //回傳資料成功
             let jshdata = res.data.data;
             if (jshdata.msgTip == "user can login") {
+              this.TEST();
               localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, loginName: jshdata.user.loginName }));
               this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               return;
