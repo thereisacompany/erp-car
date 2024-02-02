@@ -35,69 +35,83 @@ server.interceptors.response.use(function(response) {
     console.log(error);
     //回傳錯誤時,清除己登入的資料,會自動回登入頁
     localStorage.removeItem("user");
-    localStorage.removeItem("user_authList")
     return Promise.reject(error);
 });
 
 
 
 
-server.GetSupplierList = function(callback) {
-    let APIUrl = `/supplier/list`;
-    let APIParameter = `?currentPage=1&pageSize=1000`;
-    let queryStr = `{"type":"客戶"}`;
+
+
+server.GetDepotHeadList = function(wObj, callback) {
+    // /frontend/depotHead/list 派發列表
+    let currentPage = common.IsNumber(wObj.currentPage) ? Number(wObj.currentPage) : 1;
+    let pageSize = common.IsNumber(wObj.pageSize) ? Number(wObj.pageSize) : 10;
+
+    let APIUrl = `/frontend/depotHead/list`;
+    let APIParameter = `?currentPage=${currentPage}&pageSize=${pageSize}`;
+    let queryStr = `{"type":"出庫"}`;
     APIParameter += `&search=${encodeURIComponent(queryStr)}`;
     server.get(APIUrl + APIParameter)
         .then((res) => {
-            if (res != null && res.data != null && res.data.code == 200 && res.data.data != null) {
-                //回傳資料成功
-                let jshdata = JSON.parse(JSON.stringify(res.data.data));
-                for (let i = 0; i < jshdata.rows.length; i++) {
-                    jshdata.rows[i].idname = common.PadLeftZero(jshdata.rows[i].id, 3) + ' ' + jshdata.rows[i].supplier;
-                }
-                if (callback) callback(jshdata.rows)
-                return;
-            }
-            if (callback) callback(null)
-        }).catch(function(error) {
-            console.log(error)
-            if (callback) callback(null)
-            return;
-        });
-
-
-}
-
-
-server.GetMaterialListByRow = function(wObj, callback) {
-    ////material/findBySelect?q=111&categoryId=26&depotId=19&column=createTime&order=desc&mpList=%E5%88%B6%E9%80%A0%E5%95%86,%E8%87%AA%E5%AE%9A%E4%B9%891,%E8%87%AA%E5%AE%9A%E4%B9%892,%E8%87%AA%E5%AE%9A%E4%B9%893&page=1&rows=10
-
-    let APIUrl = `/material/findBySelect`;
-    let Params = `?q=${encodeURIComponent(wObj.queryName || '')}`;
-    Params += `&categoryId=`;
-    Params += `&depotId=${encodeURIComponent(wObj.depotId || '')}`;
-    Params += `&organId=${encodeURIComponent(wObj.organId || '')}`;
-    Params += `&number=${encodeURIComponent(wObj.number || '')}`;
-
-    Params += `&page=1`;
-    Params += `&rows=100`;
-    Params += `&mpList=`;
-
-    APIUrl += Params;
-
-    server.get(APIUrl)
-        .then((res) => {
-            //console.log("GetMaterialList", res)
             if (res != null && res.data != null && res.status == 200) {
                 let jshdata = res.data;
-                if (callback) callback(jshdata.rows)
-                return;
+                if (callback) callback(jshdata.data)
             }
-            if (callback) callback(null)
         }).catch(function(error) {
             console.log("error", error);
-            if (callback) callback(null)
         });
 }
 
+
+
+server.GetDeliveryData = function(wObj, callback) {
+    // /api/frontend/getDeliveryData 取得配送單狀態
+    let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
+
+    let APIUrl = `/frontend/getDeliveryData`;
+    let APIParameter = `?number=${encodeURIComponent(number)}`;
+    server.get(APIUrl + APIParameter)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata.data)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+        });
+}
+server.GetDetailByNumber = function(wObj, callback) {
+    // /api/frontend/getDetailByNumber 訂單資訊Detail
+    let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
+
+    let APIUrl = `/frontend/getDetailByNumber`;
+    let APIParameter = `?number=${encodeURIComponent(number)}`;
+    server.get(APIUrl + APIParameter)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata.data)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+        });
+}
+
+server.GetDetailList = function(wObj, callback) {
+    // /api/frontend/getDetailList 商品明细列表
+    let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
+
+    let APIUrl = `/frontend/getDetailList`;
+    let APIParameter = `?headerId=${encodeURIComponent(headerId)}&mpList=`;
+    server.get(APIUrl + APIParameter)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata.data)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+        });
+}
 export { server };

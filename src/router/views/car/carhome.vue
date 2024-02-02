@@ -193,8 +193,8 @@
                         <img src="images/user/user1.jpg?update=1" alt="image">
 
                         <div class="content">
-                            <h4 class="white_color">我是司機名稱</h4>
-                            <p class="white_color fw_4">員工編號: A12345678 / 車號:ABC-233</p>
+                            <h4 class="white_color">{{ User.UserName }}</h4>
+                            <p class="white_color fw_4">員工編號: {{ User.LoginName }} / 車號: {{ User.CarNumber }}</p>
                         </div>
                     </a>
                     <a href="javascript:;" id="btn-popup-up" class="icon-notification1"><span>2</span></a>
@@ -290,18 +290,19 @@
                     </svg> 今日派發出貨單 </h3>
                 <hr class="mt-2">
                 <ul class="mt-3 mb-5">
-                    <li class="list-card-invoice">
+                    <li class="list-card-invoice" v-for="(a1, aidx) in DepotHeadList" :key="'DepotHeadList' + aidx">
                         <div class="logo">
                             <img src="images/icon/service_icon1.png">
                         </div>
                         <div class="content-right">
-                            <h4><a href="/deliverdetail">訂單編號: PD123456789 <span class="warning_color">接單中</span></a>
+                            <h4><a href="javascript:;" @click="GoDetail(a1)">訂單編號: {{ a1.number }} <span
+                                        class="warning_color">接單中</span></a>
                             </h4>
                             <p>
-                                地址: 台北市新店區大德路二段180巷50號2樓
+                                地址: {{ a1.address }}
                             </p>
                             <p>
-                                收件人: 陳先生 &nbsp;&nbsp;&nbsp;電話:0928654121
+                                收件人: {{ a1.receiveName }} &nbsp;&nbsp;&nbsp;電話:{{ a1.cellphone }}
 
                             </p>
                             <ol class="xprogress-bar mt-5">
@@ -312,98 +313,13 @@
                             </ol>
                         </div>
                     </li>
-                    <li class="list-card-invoice">
-                        <div class="logo">
-                            <img src="images/icon/service_icon2.png">
-                        </div>
-                        <div class="content-right">
-                            <h4><a href="/deliverdetail">訂單編號: PD123456789 <span class="warning_color">聯絡中</span></a></h4>
-                            <p>
-                                地址: 台北市新店區大德路二段180巷50號2樓
-                            </p>
-                            <p>
-                                收件人: 陳先生 &nbsp;&nbsp;&nbsp;電話:0928654121
 
-                            </p>
-                            <ol class="xprogress-bar mt-5">
-                                <li class="is-complete"><span>接單中</span></li>
-                                <li class="is-active"><span>聯絡中</span></li>
-                                <li><span>配送中</span></li>
-                                <li><span>配送完成</span></li>
-                            </ol>
-                        </div>
-                    </li>
-                    <li class="list-card-invoice">
-                        <div class="logo">
-                            <img src="images/icon/service_icon3.png">
-                        </div>
-                        <div class="content-right">
-                            <h4><a href="/deliverdetail">訂單編號: PD123456789 <span class="warning_color">配送中</span></a></h4>
-                            <p>
-                                地址: 台北市新店區大德路二段180巷50號2樓
-                            </p>
-                            <p>
-                                收件人: 陳先生 &nbsp;&nbsp;&nbsp;電話:0928654121
-
-                            </p>
-                            <ol class="xprogress-bar mt-5">
-                                <li class="is-complete"><span>接單中</span></li>
-                                <li class="is-complete"><span>聯絡中</span></li>
-                                <li class="is-active"><span>配送中</span></li>
-                                <li><span>配送完成</span></li>
-                            </ol>
-                        </div>
-                    </li>
-                    <li class="list-card-invoice">
-                        <div class="logo">
-                            <img src="images/icon/service_icon1.png">
-                        </div>
-                        <div class="content-right">
-                            <h4><a href="/deliverdetail">訂單編號: PD123456789 <span class="success_color">配送完成</span></a></h4>
-                            <p>
-                                地址: 台北市新店區大德路二段180巷50號2樓
-                            </p>
-                            <p>
-                                收件人: 陳先生 &nbsp;&nbsp;&nbsp;電話:0928654121
-
-                            </p>
-                            <ol class="xprogress-bar doneok mt-5">
-                                <li class="is-complete"><span>接單中</span></li>
-                                <li class="is-complete"><span>聯絡中</span></li>
-                                <li class="is-complete"><span>配送中</span></li>
-                                <li class="is-active"><span>配送完成</span></li>
-                            </ol>
-                        </div>
-                    </li>
-
-                    <li class="list-card-invoice">
-                        <div class="logo">
-                            <img src="images/icon/service_icon3.png">
-                        </div>
-                        <div class="content-right">
-                            <h4><a href="/deliver-detail">訂單編號: PD123456789 <span class="critical_color">配送異常</span></a>
-                            </h4>
-                            <p>
-                                地址: 台北市新店區大德路二段180巷50號2樓
-                            </p>
-                            <p>
-                                收件人: 陳先生 &nbsp;&nbsp;&nbsp;電話:0928654121
-
-                            </p>
-                            <ol class="xprogress-bar bad mt-5">
-                                <li class="is-complete"><span>接單中</span></li>
-                                <li class="is-complete"><span>聯絡中</span></li>
-                                <li class="is-complete"><span>配送中</span></li>
-                                <li class="is-active"><span>配送異常</span></li>
-                            </ol>
-                        </div>
-                    </li>
                 </ul>
 
                 <div class="list-bill-view mb-4">
 
                     <div class="content text-center">
-                        <h4><a href="javascript:;" class="fw_6">更多派發紀錄</a></h4>
+                        <h4><a href="javascript:;" class="fw_6" @click="GetDataMore()">更多派發紀錄</a></h4>
                         <p>...</p>
                     </div>
                 </div>
@@ -3874,6 +3790,7 @@
     </div>
 </template>>
 <script>
+import { server } from "@/api";
 
 export default {
     setup() {
@@ -3881,16 +3798,52 @@ export default {
     },
     data() {
         return {
-            IsPreload: true,
-        }
+            DepotHeadList: [],
 
+            queryObj: {
+                currentPage: 1,
+                pageSize: 10,
+            },
+            User: {
+                LoginName: "",
+                Status: 0,
+                UserID: 0,
+                UserName: "",
+                CarNumber: ""
+            }
+
+        }
     },
     mounted() {
-        this.$nextTick(() => {
-            setTimeout(() => {
-                this.IsPreload = false;
-            }, 500);
-        })
+        let user = localStorage.getItem('user')
+        if (user == null) {
+            return;
+        }
+
+        let MyUser = JSON.parse(user)
+        //console.log("MyUser", MyUser)
+        this.User.LoginName = MyUser.LoginName;
+        this.User.Status = MyUser.Status;
+        this.User.UserID = MyUser.UserID;
+        this.User.UserName = MyUser.UserName;
+
+
+        this.$nextTick(() => { this.GetData() })
+
+    },
+    methods: {
+        GoDetail(SubItem) {
+            ///deliverdetail
+            this.$router.push(`/deliverdetail?headerId=${SubItem.id}&number=${SubItem.number}`);
+        },
+        GetData() {
+            server.GetDepotHeadList(this.queryObj, (rows) => { this.DepotHeadList = rows; });
+
+        },
+        GetDataMore() {
+            this.queryObj.pageSize = this.queryObj.pageSize * 2;
+            this.GetData();
+        }
     }
 }
 </script>

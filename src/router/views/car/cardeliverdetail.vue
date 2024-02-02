@@ -510,22 +510,60 @@
 </template>>
 <script>
 
+
+import { server } from "@/api";
+
 export default {
   setup() {
 
   },
   data() {
     return {
-      IsPreload: true,
-    }
+      queryObj: {
+        number: '',
+        headerId: '',
+      },
+      User: {
+        LoginName: "",
+        Status: 0,
+        UserID: 0,
+        UserName: "",
+        CarNumber: ""
+      }
 
+    }
   },
   mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        this.IsPreload = false;
-      }, 500);
-    })
+    let user = localStorage.getItem('user')
+    if (user == null) {
+      return;
+    }
+
+    let MyUser = JSON.parse(user)
+    //console.log("MyUser", MyUser)
+    this.User.LoginName = MyUser.LoginName;
+    this.User.Status = MyUser.Status;
+    this.User.UserID = MyUser.UserID;
+    this.User.UserName = MyUser.UserName;
+
+    this.queryObj.number = this.$route.query.number || ''
+    this.queryObj.headerId = this.$route.query.headerId || ''
+    this.$nextTick(() => { this.GetData() })
+
+  },
+  methods: {
+    GetData() {
+      server.GetDeliveryData(this.queryObj, (data) => { console.log(data) })
+      server.GetDetailByNumber(this.queryObj, (data) => { console.log(data) })
+      server.GetDetailList(this.queryObj, (data) => { console.log(data) });
+    },
+    GetDataMore() {
+      this.queryObj.pageSize = this.queryObj.pageSize * 2;
+      this.GetData();
+    }
   }
 }
 </script>
+
+
+                                                                           

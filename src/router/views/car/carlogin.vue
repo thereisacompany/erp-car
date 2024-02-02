@@ -38,6 +38,7 @@ ul.main-list li {
 </template>>
 <script>
 import { server } from "@/api";
+
 import md5 from "md5";
 import VConsole from 'vconsole';
 
@@ -55,7 +56,6 @@ export default {
   mounted() {
     //console.log("this.$route.query.vConsole=", process.env.NODE_ENV)
     localStorage.removeItem("user");
-    localStorage.removeItem("user_authList")
     if (this.$route.query.vConsole == "1") {
       new VConsole().show();
     }
@@ -63,31 +63,12 @@ export default {
       setTimeout(() => {
         this.IsPreload = false;
       }, 500);
-
     })
   },
   methods: {
 
-    TEST() {
-      // /frontend/depotHead/list
-      let APIUrl = `/frontend/depotHead/list`;
 
-      let APIParameter = `?currentPage=1&pageSize=30`;
-      let queryStr = `{"type":"出庫","number":"","MNumber":"","materialParam":"","organId":"","beginTime":"","endTime":"","depotId":"","keyword":""}`;
-      APIParameter += `&search=${encodeURIComponent(queryStr)}`;
-      server.get(APIUrl + APIParameter)
-        .then((res) => {
-          if (res != null && res.data != null && res.status == 200) {
-            let jshdata = res.data;
-            console.log(jshdata)
-          }
-        }).catch(function (error) {
-          console.log("error", error);
-        });
-    },
     tryToLogIn() {
-
-
 
       let loginName = this.loginName;
       let password = md5(String(this.password));
@@ -103,8 +84,7 @@ export default {
             //回傳資料成功
             let jshdata = res.data.data;
             if (jshdata.msgTip == "user can login") {
-              this.TEST();
-              localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, loginName: jshdata.user.loginName }));
+              localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, LoginName: jshdata.user.loginName, UserName: jshdata.user.username, Status: jshdata.user.status }));
               this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               return;
             } else {
