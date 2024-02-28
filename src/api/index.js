@@ -47,10 +47,12 @@ server.GetDepotHeadList = function(wObj, callback) {
     // /frontend/depotHead/list 派發列表
     let currentPage = common.IsNumber(wObj.currentPage) ? Number(wObj.currentPage) : 1;
     let pageSize = common.IsNumber(wObj.pageSize) ? Number(wObj.pageSize) : 10;
+    let driverId = common.IsNumber(wObj.driverId) ? Number(wObj.driverId) : 0;
 
     let APIUrl = `/frontend/depotHead/list`;
     let APIParameter = `?currentPage=${currentPage}&pageSize=${pageSize}`;
-    let queryStr = `{"type":"出庫"}`;
+    let queryStr = `{"type":"出庫","driverId":${driverId}}`;
+
     APIParameter += `&search=${encodeURIComponent(queryStr)}`;
     server.get(APIUrl + APIParameter)
         .then((res) => {
@@ -113,5 +115,119 @@ server.GetDetailList = function(wObj, callback) {
         }).catch(function(error) {
             console.log("error", error);
         });
+}
+
+
+server.SetOrderStatus = function(wObj, callback) {
+    let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
+    let orderStatus = !common.IsNullOrEmpty(wObj.orderStatus) ? wObj.orderStatus : '';
+
+    let APIUrl = `/frontend/order/status`;
+    //let APIParameter = `?headerId=${encodeURIComponent(headerId)}&orderStatus=${encodeURIComponent(orderStatus)}`;
+    let data2 = { headerId, orderStatus };
+
+    server.put(APIUrl, data2)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata)
+            }
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+}
+
+server.driverReport = function(wObj, callback) {
+    //司機回報功能api
+    let detailId = !common.IsNullOrEmpty(wObj.detailId) ? wObj.detailId : '';
+    let message = !common.IsNullOrEmpty(wObj.message) ? wObj.message : '';
+
+    let APIUrl = `/frontend/driverReport`;
+    let data2 = { detailId, message };
+    server.post(APIUrl, data2)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata)
+            }
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+}
+
+server.GetDriverReport = function(wObj, callback) {
+    // 新增api -> 取得司機回報歷程功能 get
+    // /jshERP-boot/depotHead/getDeliveryReport?headerId=62
+    // headerId : 配送單id
+
+    let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
+
+    let APIUrl = `/frontend/getDeliveryReport`;
+    let APIParameter = `?headerId=${headerId}`;
+
+    server.get(APIUrl + APIParameter)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata.data)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+
+            return;
+        });
+}
+
+
+
+
+server.UpdateDeliveryFile = function(wObj, callback) {
+    // 缺少送出修改內容(要保存上傳的照片)
+
+    // /api/frontend/delivery/file/update
+    let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
+    let filePath = wObj.filePath
+
+    let APIUrl = `/frontend/delivery/file/update`;
+    // const formData = new FormData();
+    // formData.append('headerId', headerId);
+    // formData.append('filePath', filePath);
+    let data2 = { headerId, filePath };
+
+    server.put(APIUrl, data2)
+        .then((res) => {
+            if (res != null && res.data != null && res.data.code == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+            return;
+        });
+
+}
+
+server.UploadFile1 = function(wObj, callback) {
+
+    let biz = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
+    let file = wObj.file
+
+    let APIUrl = `/systemConfig/upload`;
+    const formData = new FormData();
+    formData.append('biz', biz);
+    formData.append('file', file);
+    server.post(APIUrl, formData)
+        .then((res) => {
+            if (res != null && res.data != null && res.data.code == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata.data)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+            return;
+        });
+
 }
 export { server };

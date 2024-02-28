@@ -193,8 +193,8 @@
                         <img src="images/user/user1.jpg?update=1" alt="image">
 
                         <div class="content">
-                            <h4 class="white_color">{{ User.UserName }}</h4>
-                            <p class="white_color fw_4">員工編號: {{ User.LoginName }} / 車號: {{ User.CarNumber }}</p>
+                            <h4 class="white_color">{{ User.username }}</h4>
+                            <p class="white_color fw_4">員工編號: {{ User.LoginName }} / 車號: {{ User.licensePlateNumber }}</p>
                         </div>
                     </a>
                     <a href="javascript:;" id="btn-popup-up" class="icon-notification1"><span>2</span></a>
@@ -234,7 +234,7 @@
                                 <div class="inner-right">
                                     <p>今天日期: </p>
                                     <h3>
-                                        <span>2023/09/01</span>
+                                        <span>{{ today }}</span>
                                     </h3>
                                 </div>
                             </div>
@@ -260,7 +260,7 @@
                                 </a></li>
                             <li class="wallet-card-item"><a class="fw_6" href="tel:02-12345678">
                                     <img src="images/icon/index_service4.png" width="34" style="width:60px;">
-                                    聯絡客服
+                                    聯絡客服322
                                 </a></li>
                         </ul>
                     </div>
@@ -275,11 +275,14 @@
             <div class="tf-container">
                 <div class="box-search mt-3 mb-3">
                     <div class="input-field">
-                        <span class="icon-search"></span>
-                        <input required class="search-field value_input" placeholder="快速派發單查詢" type="text">
+                        <span class="icon-search" @click="GetData()"></span>
+                        <input required class="search-field value_input" placeholder="快速派發單查詢" type="text"
+                            v-model="queryObj.number">
                         <span class="icon-clear"></span>
                     </div>
-                    <span class="icon-qrcode4"></span>
+                    <span class="icon-qrcode4" @click="StartCamera"></span>
+
+
                 </div>
                 <h3 class="fw_6 d-flex  mt-3 mb-1"><svg width="25" height="24" viewBox="0 0 25 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -287,7 +290,8 @@
                         <path
                             d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
                             stroke="#717171" stroke-width="1.25"></path>
-                    </svg> 今日派發出貨單 </h3>
+                    </svg> 今日派發出貨單<span v-if="TotalRowsCount != 0"> ({{ DepotHeadList.length }}/{{ TotalRowsCount }})</span>
+                </h3>
                 <hr class="mt-2">
                 <ul class="mt-3 mb-5">
                     <li class="list-card-invoice" v-for="(a1, aidx) in DepotHeadList" :key="'DepotHeadList' + aidx">
@@ -295,30 +299,31 @@
                             <img src="images/icon/service_icon1.png">
                         </div>
                         <div class="content-right">
-                            <h4><a href="javascript:;" @click="GoDetail(a1)">訂單編號: {{ a1.number }} <span
-                                        class="warning_color">接單中</span></a>
+                            <h4>
+                                <a href="javascript:;" @click="GoDetail(a1)">訂單編號: {{ a1.number }} <span
+                                        :class="formatdStatusCSS(a1.dstatus)">{{ formatdStatus(a1.dstatus) }}</span> </a>
+
                             </h4>
                             <p>
                                 地址: {{ a1.address }}
                             </p>
                             <p>
                                 收件人: {{ a1.receiveName }} &nbsp;&nbsp;&nbsp;電話:{{ a1.cellphone }}
-
                             </p>
                             <ol class="xprogress-bar mt-5">
-                                <li class="is-active"><span>接單中</span></li>
-                                <li><span>聯絡中</span></li>
-                                <li><span>配送中</span></li>
-                                <li><span>配送完成</span></li>
+                                <li :class="a1.dstatus == 2 ? 'is-active' : ''"><span>接單中</span></li>
+                                <li :class="a1.dstatus == 3 ? 'is-active' : ''"><span>聯絡中</span></li>
+                                <li :class="a1.dstatus == 4 ? 'is-active' : ''"><span>配送中</span></li>
+                                <li :class="a1.dstatus == 5 ? 'is-active' : ''"><span>配送完成</span></li>
                             </ol>
+
                         </div>
                     </li>
 
                 </ul>
 
                 <div class="list-bill-view mb-4">
-
-                    <div class="content text-center">
+                    <div class="content text-center" v-if="TotalRowsCount != DepotHeadList.length">
                         <h4><a href="javascript:;" class="fw_6" @click="GetDataMore()">更多派發紀錄</a></h4>
                         <p>...</p>
                     </div>
@@ -668,9 +673,6 @@
             </div>
         </div>
 
-
-
-
         <div class="bottom-navigation-bar">
             <div class="tf-container">
                 <ul class="tf-navigation-bar">
@@ -714,7 +716,6 @@
                             aria-label="Close">關閉提醒</a>
                         <a href="javascript:;" class="primary_color btn-hide-modal" data-dismiss="modal"
                             aria-label="Close">查看訂單</a>
-
                     </div>
                 </div>
             </div>
@@ -3791,29 +3792,39 @@
 </template>>
 <script>
 import { server } from "@/api";
+import dayjs from 'dayjs';
+
+
 
 export default {
     setup() {
 
     },
+
     data() {
         return {
+            scanner: null,
             DepotHeadList: [],
-
+            TotalRowsCount: 0,
             queryObj: {
+
                 currentPage: 1,
                 pageSize: 10,
+                driverId: '',
+                number: '',
             },
             User: {
                 LoginName: "",
                 Status: 0,
                 UserID: 0,
-                UserName: "",
-                CarNumber: ""
+                username: "",
+                licensePlateNumber: "",
+                supplier_id: '',
             }
 
         }
     },
+
     mounted() {
         let user = localStorage.getItem('user')
         if (user == null) {
@@ -3825,19 +3836,58 @@ export default {
         this.User.LoginName = MyUser.LoginName;
         this.User.Status = MyUser.Status;
         this.User.UserID = MyUser.UserID;
-        this.User.UserName = MyUser.UserName;
-
-
+        this.User.username = MyUser.username;
+        this.User.licensePlateNumber = MyUser.licensePlateNumber;
+        this.User.supplier_id = MyUser.supplier_id;
+        this.queryObj.driverId = this.User.supplier_id
         this.$nextTick(() => { this.GetData() })
 
     },
+    computed: {
+        today() {
+            return dayjs().format("YYYY/MM/DD")
+
+        },
+
+    },
     methods: {
+        StartCamera() {
+
+        },
+        onDecode(result) {
+            this.queryObj.number = result;
+        },
+        formatdStatusCSS(dStatus) {
+            switch (Number(dStatus)) {
+                case 0: return "warning_color";
+                case 1: return "warning_color";
+                case 2: return "warning_color";
+                case 3: return "warning_color";
+                case 4: return "warning_color";
+                case 5: return "success_color";
+                case 6: return "critical_color";
+                default: return ""
+            }
+        },
+        formatdStatus(dStatus) {
+            switch (Number(dStatus)) {
+                case 0: return "未派發";
+                case 1: return "已派發";
+                case 2: return "已接單";
+                case 3: return "聯絡中";
+                case 4: return "配送中";
+                case 5: return "配送完成";
+                case 6: return "配送異常";
+
+                default: return dStatus
+            }
+        },
         GoDetail(SubItem) {
             ///deliverdetail
             this.$router.push(`/deliverdetail?headerId=${SubItem.id}&number=${SubItem.number}`);
         },
         GetData() {
-            server.GetDepotHeadList(this.queryObj, (rows) => { this.DepotHeadList = rows; });
+            server.GetDepotHeadList(this.queryObj, (apData) => { console.log("apData", apData); this.DepotHeadList = apData.rows; this.TotalRowsCount = apData.total });
 
         },
         GetDataMore() {

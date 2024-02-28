@@ -84,7 +84,7 @@ export default {
             //回傳資料成功
             let jshdata = res.data.data;
             if (jshdata.msgTip == "user can login") {
-              localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, LoginName: jshdata.user.loginName, UserName: jshdata.user.username, Status: jshdata.user.status }));
+              localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, LoginName: jshdata.user.loginName, username: jshdata.user.username, licensePlateNumber: jshdata.user.licensePlateNumber, supplier_id: jshdata.user.supplier_id, Status: jshdata.user.status }));
               this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               return;
             } else {
