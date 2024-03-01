@@ -45,13 +45,17 @@ server.interceptors.response.use(function(response) {
 
 server.GetDepotHeadList = function(wObj, callback) {
     // /frontend/depotHead/list 派發列表
+
     let currentPage = common.IsNumber(wObj.currentPage) ? Number(wObj.currentPage) : 1;
     let pageSize = common.IsNumber(wObj.pageSize) ? Number(wObj.pageSize) : 10;
     let driverId = common.IsNumber(wObj.driverId) ? Number(wObj.driverId) : 0;
+    // console.log("wObj", wObj, 'number', wObj['number'], 'number')
+    // let number = !common.IsNullOrEmpty(wObj['number']) ? wObj['number'] : '';
+    // console.log("wObj2", wObj, 'number', wObj['number'], 'number')
 
     let APIUrl = `/frontend/depotHead/list`;
     let APIParameter = `?currentPage=${currentPage}&pageSize=${pageSize}`;
-    let queryStr = `{"type":"出庫","driverId":${driverId}}`;
+    let queryStr = `{"type":"出庫","driverId":'${driverId}',"number":'${wObj.number}'}`;
 
     APIParameter += `&search=${encodeURIComponent(queryStr)}`;
     server.get(APIUrl + APIParameter)

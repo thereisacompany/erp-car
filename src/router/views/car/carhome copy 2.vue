@@ -1,14 +1,5 @@
 
 <style>
-#qr-code-full-region button {
-    color: red
-}
-
-#qr-code-full-region img {
-    width: 80%;
-    max-height: 70vh;
-}
-
 .xprogress-bar {
     display: flex;
     justify-content: space-between;
@@ -286,8 +277,8 @@
                     <div class="input-field">
                         <span class="icon-search" @click="GetData()"></span>
                         <input required class="search-field value_input" placeholder="快速派發單查詢" type="text"
-                            v-model="queryObj.number" v-on:keyup.enter="GetData">
-                        <span class="icon-clear" @click="queryObj.number = ''; GetData()"></span>
+                            v-model="queryObj.number">
+                        <span class="icon-clear"></span>
                     </div>
                     <span class="icon-qrcode4" @click="StartCamera"></span>
                 </div>
@@ -3868,43 +3859,35 @@ export default {
     methods: {
 
         createScan() {
-            if (this.html5QrcodeScanner != null && this.html5QrcodeScanner.getState() == 3) {
-                console.log("getstate", this.html5QrcodeScanner.getState())
-                this.html5QrcodeScanner.resume();
-            } else {
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    rememberLastUsedCamera: true
-                };
-                this.html5QrcodeScanner = new Html5QrcodeScanner(
-                    "qr-code-full-region",
-                    config,
-                    false
-                );
-                this.html5QrcodeScanner.render((decodedText) => {
+            console.log(Html5QrcodeScanner.Html5QrcodeScanType)
+            const config = {
+                fps: 10,
+                qrbox: { width: 200, height: 200 },
+                rememberLastUsedCamera: true,
 
-                    this.queryObj.number = String(decodedText);
-                    this.isCameraOpen = false; // 设置相机状态为关闭
-                    this.GetData()
-                    this.closeCamera()
-
-                });
-            }
-            this.isCameraOpen = true;
+            };
+            this.html5QrcodeScanner = new Html5QrcodeScanner(
+                "qr-code-full-region",
+                config,
+                false
+            );
+            this.html5QrcodeScanner.render(this.onScanSuccess);
+            this.isCameraOpen = true; // 设置相机状态为打开
         },
-
+        onScanSuccess(decodedText, decodedResult) {
+            console.log(decodedResult)
+            this.queryObj.number = decodedText;
+            this.closeCamera();
+        },
         closeCamera() {
             this.isCameraOpen = false; // 设置相机状态为关闭
+            if (this.html5QrcodeScanner) {
+                this.html5QrcodeScanner.stop();
 
-            if (this.html5QrcodeScanner && this.html5QrcodeScanner.getState() == 2) {
-                console.log("getstate", this.html5QrcodeScanner.getState())
-                this.html5QrcodeScanner.pause();
             }
         },
 
         StartCamera() {
-            console.log(this.html5QrcodeScanner)
             if (!this.isCameraOpen) {
                 this.createScan();
             } else {
@@ -3942,8 +3925,7 @@ export default {
             this.$router.push(`/deliverdetail?headerId=${SubItem.id}&number=${SubItem.number}`);
         },
         GetData() {
-
-            server.GetDepotHeadList(this.queryObj, (apData) => { this.DepotHeadList = apData.rows; this.TotalRowsCount = apData.total });
+            server.GetDepotHeadList(this.queryObj, (apData) => { console.log("apData", apData); this.DepotHeadList = apData.rows; this.TotalRowsCount = apData.total });
 
         },
         GetDataMore() {

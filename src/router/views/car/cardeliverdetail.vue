@@ -521,19 +521,20 @@
       </form>
     </b-modal>
 
-
   </div>
-</template>>
+</template>
 <script>
 
 import dayjs from 'dayjs'
 import { server } from "@/api";
 import common from "@/api/common";
 
+
 export default {
   setup() {
 
   },
+
   data() {
     return {
       modelMsg: {
@@ -803,7 +804,7 @@ export default {
       server.UpdateDeliveryFile({ headerId: this.DetailInfo.id, filePath: this.filelist.join(',') }, (apRlt) => {
         console.log("aprlt", apRlt)
         if (apRlt != null && apRlt.msg == "操作成功") {
-          this.customerReportMsg = "";
+
           this.ShowMessage("送出修改", "己保存")
           this.GetData();
         } else {

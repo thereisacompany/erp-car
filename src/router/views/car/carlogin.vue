@@ -5,6 +5,10 @@ ul.main-list li {
   width: 24.3%;
   padding: 8px;
 }
+
+.login-section input {
+  text-align: center
+}
 </style>
 
 <template>
@@ -85,6 +89,7 @@ export default {
             let jshdata = res.data.data;
             if (jshdata.msgTip == "user can login") {
               localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, LoginName: jshdata.user.loginName, username: jshdata.user.username, licensePlateNumber: jshdata.user.licensePlateNumber, supplier_id: jshdata.user.supplier_id, Status: jshdata.user.status }));
+              //this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               return;
             } else {

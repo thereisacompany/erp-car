@@ -19,7 +19,6 @@ import store from "./state/store";
 
 import "../src/design/app.scss";
 
-
 createApp(App)
     .component('PageLoading', PageLoading)
     .use(store)

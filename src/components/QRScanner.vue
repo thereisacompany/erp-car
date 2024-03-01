@@ -1,58 +1,36 @@
 <template>
   <div>
-    <video ref="video" autoplay></video>
-    <canvas ref="canvas" style="display: none;"></canvas>
-    <div>
-      <p v-if="qrCodeResult">QR Code Result: {{ qrCodeResult }}</p>
-      <p v-if="barcodeResult">Barcode Result: {{ barcodeResult }}</p>
-    </div>
+    <qrcode-stream ref="qrcodeStream" @decode="onDecode" v-if="isScanning" :located="true"></qrcode-stream>
+    <button @click="toggleScanning" v-if="isScanning" style="color:black">關閉鏡頭</button>
   </div>
 </template>
 
 <script>
-import QrScanner from '@nimiq/qr-scanner';
+import QrcodeStream from 'vue-qrcode-reader/src/components/QrcodeStream.vue'; // 直接导入 QrcodeStream 组件
 
 export default {
+  components: {
+    QrcodeStream,
+  },
   data() {
     return {
-      qrCodeResult: '',
-      barcodeResult: ''
+      isScanning: false,
     };
   },
-  mounted() {
-    this.initScanner();
-  },
   methods: {
-    async initScanner() {
-      const video = this.$refs.video;
-      const canvas = this.$refs.canvas;
-      const scanner = new QrScanner(video, result => {
-        if (result !== this.qrCodeResult) {
-          this.qrCodeResult = result;
-          this.barcodeResult = ''; // Reset barcode result if QR code found
-        }
-      });
-
-      QrScanner.hasCamera().then(hasCamera => {
-        if (!hasCamera) {
-          alert('No camera found');
-          return;
-        }
-        QrScanner.listCameras().then(cameras => {
-          if (cameras.length > 0) {
-            scanner.start(cameras[0]);
-          } else {
-            alert('No cameras found');
-          }
-        });
-      });
-
-      scanner.start();
+    toggleScanning() {
+      this.isScanning = !this.isScanning;
+      if (this.isScanning) {
+        this.$refs.qrcodeStream.start();
+      } else {
+        this.$refs.qrcodeStream.stop();
+      }
+    },
+    onDecode(result) {
+      // 触发自定义事件，并将扫描结果传递给父组件
+      this.$emit('scan-complete', result);
+      this.toggleScanning(); // 扫描成功后关闭相机
     },
   },
 };
 </script>
-
-<style scoped>
-/* Add some styles if needed */
-</style>

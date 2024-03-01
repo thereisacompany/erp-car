@@ -1,14 +1,5 @@
 
 <style>
-#qr-code-full-region button {
-    color: red
-}
-
-#qr-code-full-region img {
-    width: 80%;
-    max-height: 70vh;
-}
-
 .xprogress-bar {
     display: flex;
     justify-content: space-between;
@@ -286,14 +277,12 @@
                     <div class="input-field">
                         <span class="icon-search" @click="GetData()"></span>
                         <input required class="search-field value_input" placeholder="快速派發單查詢" type="text"
-                            v-model="queryObj.number" v-on:keyup.enter="GetData">
-                        <span class="icon-clear" @click="queryObj.number = ''; GetData()"></span>
+                            v-model="queryObj.number">
+                        <span class="icon-clear"></span>
                     </div>
                     <span class="icon-qrcode4" @click="StartCamera"></span>
                 </div>
-                <div v-show="isCameraOpen">
-                    <div id="qr-code-full-region"></div>
-                </div>
+                <QRScanner ref="qrScanner" @scan-complete="handleScanComplete" />
                 <h3 class="fw_6 d-flex  mt-3 mb-1"><svg width="25" height="24" viewBox="0 0 25 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <circle cx="12.25" cy="12" r="9.5" stroke="#717171"></circle>
@@ -3805,21 +3794,17 @@
 <script>
 import { server } from "@/api";
 import dayjs from 'dayjs';
-
-import { Html5QrcodeScanner } from "html5-qrcode";
-
+import QRScanner from '@/components/QRScanner.vue';
 export default {
     setup() {
 
     },
-
+    components: {
+        QRScanner,
+    },
     data() {
         return {
-            html5QrcodeScanner: null,
-            isCameraOpen: false,
-            html5QrCode: null,
-            showScanner: false,
-            scannerButtonText: 'Open Scanner',
+
             DepotHeadList: [],
             TotalRowsCount: 0,
             queryObj: {
@@ -3842,13 +3827,13 @@ export default {
     },
 
     mounted() {
-
         let user = localStorage.getItem('user')
         if (user == null) {
             return;
         }
 
         let MyUser = JSON.parse(user)
+        //console.log("MyUser", MyUser)
         this.User.LoginName = MyUser.LoginName;
         this.User.Status = MyUser.Status;
         this.User.UserID = MyUser.UserID;
@@ -3857,59 +3842,20 @@ export default {
         this.User.supplier_id = MyUser.supplier_id;
         this.queryObj.driverId = this.User.supplier_id
         this.$nextTick(() => { this.GetData() })
-        //this.createScan();
+
     },
     computed: {
         today() {
             return dayjs().format("YYYY/MM/DD")
         },
     },
-
     methods: {
-
-        createScan() {
-            if (this.html5QrcodeScanner != null && this.html5QrcodeScanner.getState() == 3) {
-                console.log("getstate", this.html5QrcodeScanner.getState())
-                this.html5QrcodeScanner.resume();
-            } else {
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    rememberLastUsedCamera: true
-                };
-                this.html5QrcodeScanner = new Html5QrcodeScanner(
-                    "qr-code-full-region",
-                    config,
-                    false
-                );
-                this.html5QrcodeScanner.render((decodedText) => {
-
-                    this.queryObj.number = String(decodedText);
-                    this.isCameraOpen = false; // 设置相机状态为关闭
-                    this.GetData()
-                    this.closeCamera()
-
-                });
-            }
-            this.isCameraOpen = true;
-        },
-
-        closeCamera() {
-            this.isCameraOpen = false; // 设置相机状态为关闭
-
-            if (this.html5QrcodeScanner && this.html5QrcodeScanner.getState() == 2) {
-                console.log("getstate", this.html5QrcodeScanner.getState())
-                this.html5QrcodeScanner.pause();
-            }
+        handleScanComplete(result) {
+            this.queryObj.number = result;
         },
 
         StartCamera() {
-            console.log(this.html5QrcodeScanner)
-            if (!this.isCameraOpen) {
-                this.createScan();
-            } else {
-                this.closeCamera();
-            }
+            this.$refs.qrScanner.toggleScanning(); // 调用子组件的开始扫描方法
         },
 
         formatdStatusCSS(dStatus) {
@@ -3942,8 +3888,7 @@ export default {
             this.$router.push(`/deliverdetail?headerId=${SubItem.id}&number=${SubItem.number}`);
         },
         GetData() {
-
-            server.GetDepotHeadList(this.queryObj, (apData) => { this.DepotHeadList = apData.rows; this.TotalRowsCount = apData.total });
+            server.GetDepotHeadList(this.queryObj, (apData) => { console.log("apData", apData); this.DepotHeadList = apData.rows; this.TotalRowsCount = apData.total });
 
         },
         GetDataMore() {
