@@ -3806,7 +3806,7 @@
 import { server } from "@/api";
 import dayjs from 'dayjs';
 
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 
 export default {
     setup() {
@@ -3869,13 +3869,15 @@ export default {
 
         createScan() {
             if (this.html5QrcodeScanner != null && this.html5QrcodeScanner.getState() == 3) {
-                console.log("getstate", this.html5QrcodeScanner.getState())
+                //console.log("getstate", this.html5QrcodeScanner.getState())
                 this.html5QrcodeScanner.resume();
             } else {
+
                 const config = {
                     fps: 10,
                     qrbox: { width: 250, height: 250 },
-                    rememberLastUsedCamera: true
+                    rememberLastUsedCamera: true,
+                    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
                 };
                 this.html5QrcodeScanner = new Html5QrcodeScanner(
                     "qr-code-full-region",
