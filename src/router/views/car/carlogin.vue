@@ -1,4 +1,3 @@
-
 <style>
 ul.main-list li {
   display: inline-block;
@@ -88,7 +87,21 @@ export default {
             //回傳資料成功
             let jshdata = res.data.data;
             if (jshdata.msgTip == "user can login") {
-              localStorage.setItem('user', JSON.stringify({ UserID: jshdata.user.id, token: jshdata.token, LoginName: jshdata.user.loginName, username: jshdata.user.username, licensePlateNumber: jshdata.user.licensePlateNumber, supplier_id: jshdata.user.supplier_id, Status: jshdata.user.status }));
+              localStorage.setItem('user', JSON.stringify({
+                UserID: jshdata.user.id,
+                token: jshdata.token,
+                LoginName: jshdata.user.loginName,
+                username: jshdata.user.username,
+                licensePlateNumber: jshdata.user.licensePlateNumber,
+                supplier_id: jshdata.user.supplier_id,
+                Status: jshdata.user.status,
+
+                phoneNum: jshdata.user.phoneNum,
+                telephone: jshdata.user.telephone,
+                email: jshdata.user.email,
+                birthday: jshdata.user.birthday,
+                sex: jshdata.user.sex,
+              }));
               //this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               this.$router.push(this.$route.query.redirectFrom || { name: "default", });
               return;

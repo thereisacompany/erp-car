@@ -1,5 +1,6 @@
 import axios from 'axios';
 import common from "@/api/common";
+import dayjs from 'dayjs';
 const server = axios.create({
     baseURL: process.env.VUE_APP_API_URL //http://jslerp.ddns.net:9999/jshERP-boot/
 });
@@ -49,13 +50,16 @@ server.GetDepotHeadList = function(wObj, callback) {
     let currentPage = common.IsNumber(wObj.currentPage) ? Number(wObj.currentPage) : 1;
     let pageSize = common.IsNumber(wObj.pageSize) ? Number(wObj.pageSize) : 10;
     let driverId = common.IsNumber(wObj.driverId) ? Number(wObj.driverId) : 0;
+    let beginTime = common.IsDate(wObj.beginTime) ? dayjs(wObj.beginTime).format("YYYY-MM-DD") : '';
+    let endTime = common.IsDate(wObj.endTime) ? dayjs(wObj.endTime).format("YYYY-MM-DD") : '';
+    let keyword = wObj.keyword || '';
     // console.log("wObj", wObj, 'number', wObj['number'], 'number')
     // let number = !common.IsNullOrEmpty(wObj['number']) ? wObj['number'] : '';
     // console.log("wObj2", wObj, 'number', wObj['number'], 'number')
 
     let APIUrl = `/frontend/depotHead/list`;
     let APIParameter = `?currentPage=${currentPage}&pageSize=${pageSize}`;
-    let queryStr = `{"type":"出庫","driverId":'${driverId}',"number":'${wObj.number}'}`;
+    let queryStr = `{"type":"出庫","driverId":'${driverId}',"number":'${wObj.number}',"keyword":'${keyword}',"beginTime":'${beginTime}',"endTime":'${endTime}'}`;
 
     APIParameter += `&search=${encodeURIComponent(queryStr)}`;
     server.get(APIUrl + APIParameter)
@@ -120,7 +124,30 @@ server.GetDetailList = function(wObj, callback) {
             console.log("error", error);
         });
 }
+server.SetDeliveryAssign = function(wObj, callback) {
+    ///api/frontend/delivery/assign
+    // 配送單號, required = true
+    // String number
+    // 司機id, required = true
+    // Integer driverId
+    //driverId=31&number=S20240131121759213
+    let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
+    let driverId = common.IsNumber(wObj.driverId) ? wObj.driverId : 0;
 
+    let APIUrl = `/frontend/delivery/assign`;
+    let data2 = { driverId, number };
+
+    server.put(APIUrl, data2)
+        .then((res) => {
+            if (res != null && res.data != null && res.status == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata)
+            }
+        })
+        .catch(function(error) {
+            console.log("error", error);
+        });
+}
 
 server.SetOrderStatus = function(wObj, callback) {
     let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';

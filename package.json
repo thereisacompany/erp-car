@@ -52,6 +52,7 @@
         "simplebar-vue3": "^0.1.5",
         "sweetalert2": "^11.3.6",
         "vconsole": "^3.15.0",
+        "video.js": "^8.10.0",
         "vue": "^3.0.0",
         "vue-chartist": "^3.0.0",
         "vue-cropperjs": "^5.0.0",

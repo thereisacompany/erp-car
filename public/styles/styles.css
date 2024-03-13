@@ -1205,6 +1205,10 @@ input[type=radio] {
     background: #f2cc4d;
 }
 
+.tf-navigation-bar li.active.today a svg * {
+    stroke: #f2cc4d;
+}
+
 .tf-navigation-bar li.active a .icon-history::after {
     color: #ffffff;
 }

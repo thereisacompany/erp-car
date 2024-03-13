@@ -1,4 +1,3 @@
-
 <style>
 .xprogress-bar {
   display: flex;
@@ -272,6 +271,22 @@
   position: relative;
   padding-bottom: 100%;
 }
+
+.OneBottomBtn {
+  grid-template-columns: 1fr !important
+}
+
+.video-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 </style>
 
 
@@ -411,7 +426,7 @@
                 <h4 class="fw_6"><a href="javascript:;" @click="SetOrderStatus(5)">配送完成</a></h4>
                 <p>客戶完成簽收</p>
               </div>
-              <input type="checkbox" class="tf-checkbox circle-chec" :checked="formatDeliveryStatus(5)"
+              <input type="checkbox" class="tf-checkbox circle-check" :checked="formatDeliveryStatus(5)"
                 @click="SetOrderStatus(5)">
             </li>
           </ul>
@@ -461,9 +476,10 @@
                 <li v-for="(f1, fidx) in filelist" :key="'file-' + fidx">
                   <span class="bank-list">
                     <img class="logo-bank" v-if="CheckIsImage(f1)" :src="GetAccessFile1(f1)" @click="ShowImage(f1)" />
-                    <a v-else href="javascript:;" @click="ShowImage(f1)" style="word-break:break-all">{{
-                      f1.split('/').pop()
-                    }}</a>
+                    <img class="logo-bank" v-else-if="CheckIsVideo(f1)" src="/images/playvideo.jpg"
+                      @click="ShowImage(f1)" />
+                    <a v-else href="javascript:;" @click="ShowImage(f1)" style="word-break:break-all">
+                      {{ f1.split('/').pop() }}</a>
                   </span>
                   <a href="javascript:;" class="text-danger" @click="DeleteFile1(f1)">&nbsp;<i class="bx bx-x"></i></a>
                 </li>
@@ -485,6 +501,7 @@
             <div class=" mt-5 st2">
               <a class="tf-btn accent large" href="javascript:;" id="btn-popup-down"
                 @click="UpdateDeliveryReport">送出修改</a>
+
             </div>
 
           </form>
@@ -501,10 +518,11 @@
           </h4>
           <p class="fw_4 mt-2 text-center">{{ modelMsg.msg }}</p>
         </div>
-        <div class="bottom">
+        <div class="bottom" :class="modelMsg.IsAlert ? 'OneBottomBtn' : ''">
 
           <a href="#" class="btn-hide-modal" :class="modelMsg.iscritical ? 'critical_color' : 'primary_color'"
-            data-dismiss="modal" aria-label="Close" @click="SetOrderStatusConfirm" v-if="modelMsg.IsAlert == false">確認</a>
+            data-dismiss="modal" aria-label="Close" @click="SetOrderStatusConfirm"
+            v-if="modelMsg.IsAlert == false">確認</a>
           <a href="javascript:;" class="secondary_color btn-hide-modal" data-dismiss="modal" aria-label="Close"
             @click="CloseModal()">{{ modelMsg.IsAlert == false ? '取消' : '確認' }}</a>
         </div>
@@ -514,21 +532,28 @@
       hide-header hide-footer>
       <form>
         <div class="row text-center">
-          <div class="col-12">
+          <div class="col-12" v-if="showImageURL != ''">
             <img :src="showImageURL" max-width="100%" max-height="100%" style="max-width: 100%;">
+          </div>
+          <div class="col-12" v-show="showVideoURL != ''">
+            <video ref="videoPlayer" playsinline controls preload="auto" autoplay loop muted>
+              <source :src="showVideoURL" type="video/mp4">
+              您的瀏覽器不支援影片格式
+            </video>
           </div>
         </div>
       </form>
     </b-modal>
 
+
   </div>
 </template>
 <script>
 
+
 import dayjs from 'dayjs'
 import { server } from "@/api";
 import common from "@/api/common";
-
 
 export default {
   setup() {
@@ -574,6 +599,7 @@ export default {
       DetailInfo: {},
 
       showImageURL: '',
+      showVideoURL: '',
       showImageModal: false,
     }
   },
@@ -592,9 +618,19 @@ export default {
 
     this.queryObj.number = this.$route.query.number || ''
     this.queryObj.headerId = this.$route.query.headerId || ''
-    this.$nextTick(() => { this.GetData() })
+    this.$nextTick(() => {
+      // const video = this.$refs.videoPlayer;
+      // console.log("video", video)
+      // this.player = videojs(video, {}, function onPlayerReady() {
+      //   console.log('onPlayerReady', this);
+      // });
+      this.GetData()
+    })
+
+
 
   },
+
   methods: {
     handleFileUpload: function () {
       console.log("handleFileUpload")
@@ -613,13 +649,23 @@ export default {
       this.$refs.file2.value = '';
     },
     GetAccessFile1(UrlPath1) {
-      let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static/${UrlPath1}`;
+      let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static${UrlPath1}`;
       return APIUrl;
 
     },
+
     CheckIsImage(ImageUrl) {
       let filename = this.GetAccessFile1(ImageUrl);
       const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+      const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
+      if (imageExtensions.includes(extension)) {
+        return true;
+      }
+      return false;
+    },
+    CheckIsVideo(ImageUrl) {
+      let filename = this.GetAccessFile1(ImageUrl);
+      const imageExtensions = ['.mp4', '.mov'];
       const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
       if (imageExtensions.includes(extension)) {
         return true;
@@ -630,6 +676,16 @@ export default {
       const filteredArray = this.filelist.filter(obj => !(obj === file1));
       this.filelist = filteredArray;
     },
+    playVideo() {
+
+      const video = this.$refs.videoPlayer;
+      if (video && !video.paused) {
+        return; // 如果视频已经在播放，则不执行任何操作
+      }
+      if (video && video.paused) {
+        video.play(); // 播放视频
+      }
+    },
     ShowImage(ImageUrl) {
       let filename = this.GetAccessFile1(ImageUrl);
 
@@ -637,7 +693,21 @@ export default {
       const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
       if (imageExtensions.includes(extension)) {
         this.showImageURL = filename;
+        this.showVideoURL = '';
         this.showImageModal = true;
+      } else if (['.mp4', '.mov'].includes(extension)) {
+        this.showImageURL = '';
+        this.showVideoURL = filename;
+        this.showImageModal = true;
+        const video = this.$refs.videoPlayer;
+        if (video) {
+          this.$nextTick(() => {
+            video.style.width = '100%';
+            video.style.height = `100%`;
+            video.src = this.showVideoURL;
+            video.play();
+          })
+        }
       } else {
         window.open(filename, "file1");
       }
@@ -852,6 +922,3 @@ export default {
   }
 }
 </script>
-
-
-                                                                           

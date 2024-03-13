@@ -1,4 +1,3 @@
-
 <style>
 ul.main-list li {
   display: inline-block;
@@ -27,37 +26,31 @@ ul.main-list li {
         <form class="tf-form mt-8">
           <div class="group-input">
             <label>員工編號</label>
-            <input type="text" placeholder="司機名稱">
+            <input type="text" v-model="MyUser.LoginName">
           </div>
           <div class="group-input">
             <label>司機名稱</label>
-            <input type="text" placeholder="xxxxx大哥">
+            <input type="text" v-model="MyUser.username">
           </div>
           <div class="group-input">
             <label>Email</label>
-            <input type="text" placeholder="Example@gmail">
+            <input type="text" v-model="MyUser.email">
           </div>
           <div class="group-input">
             <label>電話</label>
-            <input type="text" placeholder="0912345678">
+            <input type="text" v-model="MyUser.phoneNum">
           </div>
           <div class="group-input">
             <label>車號</label>
-            <input type="text" placeholder="ABC-123">
+            <input type="text" v-model="MyUser.licensePlateNumber">
           </div>
           <div class="group-input">
             <label>生日</label>
-            <input type="date">
+            <input type="date" v-model="MyUser.birthday">
           </div>
-          <div class="group-input">
-            <label>性別</label>
-            <select class="box-sl-profile sl-gender form-select">
-              <option>男</option>
-              <option>女</option>
-            </select>
-          </div>
+
           <div class="bottom-navigation-bar bottom-btn-fixed st2">
-            <button class="tf-btn accent large" onclick="return false">Continue</button>
+            <a class="tf-btn accent large" href="/">Continue</a>
           </div>
         </form>
       </div>
@@ -75,16 +68,29 @@ export default {
   },
   data() {
     return {
-      IsPreload: true,
+      MyUser: {},
     }
 
   },
   mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        this.IsPreload = false;
-      }, 500);
-    })
+    let user = localStorage.getItem('user')
+    if (user == null) {
+      return;
+    }
+    this.MyUser = JSON.parse(user)
+    console.log(this.MyUser)
+    // UserID: jshdata.user.id,
+    // token: jshdata.token,
+    // LoginName: jshdata.user.loginName,
+    // username: jshdata.user.username,
+    // licensePlateNumber: jshdata.user.licensePlateNumber,
+    // supplier_id: jshdata.user.supplier_id,
+    // Status: jshdata.user.status,
+    // phoneNum: jshdata.user.phoneNum,
+    // telephone: jshdata.user.telephone,
+    // email: jshdata.user.email,
+    // birthday: jshdata.user.birthday,
+    // sex: jshdata.user.sex,
   }
 }
 </script>
