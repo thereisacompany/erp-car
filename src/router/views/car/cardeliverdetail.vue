@@ -319,7 +319,11 @@
               <li :class="formatDriverStatus(4)"><span>配送中</span></li>
               <li :class="formatDriverStatus(5)"><span>配送完成</span></li>
             </ol>
-            <h3 class="fw_6"><a href="#" class="white_color">配送訂單類型及資訊</a></h3>
+            <h3 class="fw_6"><a href="javascript:;" class="white_color">
+                <span class="btn btn-success btn-sm" v-if="DetailInfo.subType == '配送單'">配送單</span>
+                <span class="btn btn-warning btn-sm" v-if="DetailInfo.subType == '門市取貨'">門市取貨</span>
+                <span class="btn btn-warning btn-sm" v-if="DetailInfo.subType == '門市取貨派送'">門市取貨派送</span>
+              </a></h3>
 
             <div class="bottom d-flex justify-content-between">
               <div class="inner-left">
@@ -633,11 +637,20 @@ export default {
 
   methods: {
     handleFileUpload: function () {
-      console.log("handleFileUpload")
+      //console.log("handleFileUpload")
+
       for (let i = 0; i < this.$refs.file2.files.length; i++) {
         let file1 = this.$refs.file2.files[i];
         console.log(file1.size)
-        if (file1.size <= 10240000) {
+        if (file1.size > 30720000) {
+          this.ShowMessage("檔案上傳錯誤", `檔案大小不可大於30MB`)
+          return;
+        }
+      }
+
+      for (let i = 0; i < this.$refs.file2.files.length; i++) {
+        let file1 = this.$refs.file2.files[i];
+        if (file1.size <= 30720000) {
           server.UploadFile1({ biz: 'driver', file: file1 }, (uploadPath) => {
             if (uploadPath != null) {
               this.filelist.push(uploadPath);

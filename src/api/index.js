@@ -50,8 +50,8 @@ server.GetDepotHeadList = function(wObj, callback) {
     let currentPage = common.IsNumber(wObj.currentPage) ? Number(wObj.currentPage) : 1;
     let pageSize = common.IsNumber(wObj.pageSize) ? Number(wObj.pageSize) : 10;
     let driverId = common.IsNumber(wObj.driverId) ? Number(wObj.driverId) : 0;
-    let beginTime = common.IsDate(wObj.beginTime) ? dayjs(wObj.beginTime).format("YYYY-MM-DD") : '';
-    let endTime = common.IsDate(wObj.endTime) ? dayjs(wObj.endTime).format("YYYY-MM-DD") : '';
+    let beginTime = common.IsDate(wObj.beginTime) ? dayjs(wObj.beginTime).format("YYYY-MM-DD HH:mm:ss") : '';
+    let endTime = common.IsDate(wObj.endTime) ? dayjs(wObj.endTime).format("YYYY-MM-DD HH:mm:ss") : '';
     let keyword = wObj.keyword || '';
     // console.log("wObj", wObj, 'number', wObj['number'], 'number')
     // let number = !common.IsNullOrEmpty(wObj['number']) ? wObj['number'] : '';
