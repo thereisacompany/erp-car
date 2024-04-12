@@ -964,6 +964,18 @@ input[type=radio] {
     background-color: #ffffff;
 }
 
+.tf-btn.logout {
+    background-color: #ff3e3e;
+    border: 1px solid #ff3e3e;
+    color: #ffffff;
+}
+
+.tf-btn.logout:hover {
+    color: #ff3e3e;
+    border-color: #ff3e3e;
+    background-color: #ffffff;
+}
+
 .tf-btn.outline {
     color: #f2cc4d;
     border: 1px solid #f2cc4d;

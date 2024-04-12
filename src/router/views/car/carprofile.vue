@@ -49,9 +49,12 @@ ul.main-list li {
             <input type="date" v-model="MyUser.birthday">
           </div>
 
+
           <div class="bottom-navigation-bar bottom-btn-fixed st2">
-            <a class="tf-btn accent large" href="/">Continue</a>
+            <a class="tf-btn logout large" style="margin-bottom:5px" href="javascript:;" @click="logout()">登出</a>
+            <a class="tf-btn accent large" href="/">返回</a>
           </div>
+
         </form>
       </div>
 
@@ -78,7 +81,7 @@ export default {
       return;
     }
     this.MyUser = JSON.parse(user)
-    console.log(this.MyUser)
+    //console.log(this.MyUser)
     // UserID: jshdata.user.id,
     // token: jshdata.token,
     // LoginName: jshdata.user.loginName,
@@ -92,5 +95,12 @@ export default {
     // birthday: jshdata.user.birthday,
     // sex: jshdata.user.sex,
   }
+  , methods: {
+    logout() {
+      localStorage.removeItem("user");
+      this.$router.push({ name: "login" });
+
+    }
+  },
 }
 </script>

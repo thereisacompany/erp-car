@@ -22,18 +22,20 @@ ul.main-list li {
       <div class="wrap-qr">
         <div class="tf-container">
           <h2 class="fw_6 text-center">請確認對準後，下方出現編號後即可送出</h2>
+
           <div class="logo-qr" v-show="!isCameraOpen">
             <img src="images/scan-qr/qrcode1.png" alt="image" @click="StartCamera">
           </div>
           <div v-show="isCameraOpen">
             <div id="qr-code-full-region"></div>
+            <h2 class="tf-btn light medium" @click="closeCamera">關閉相機</h2>
           </div>
           <div class="group-input mt-3">
-            <input type="text" placeholder="配送單號" v-model.trim="queryObj.keyword">
+            <input type="text" class="text-center" placeholder="配送單號" v-model.trim="queryObj.keyword">
           </div>
         </div>
       </div>
-
+      <div class="tf-spacing-60"></div>
       <div class="bottom-navigation-bar bottom-btn-fixed">
         <div class="tf-container d-flex ">
           <a href="javascript:;" @click="SendConfirm" class="tf-btn accent medium">確認送出</a>
@@ -63,13 +65,17 @@ ul.main-list li {
 <script>
 
 import { server } from "@/api";
-import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
+//import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
+import { useHtml5QrCode } from '@/api/html5-qr-code'
+import VConsole from 'vconsole';
 export default {
   setup() {
 
   },
   data() {
     return {
+      cameraSupported: false,
+      html5QrCode: null,
       modelMsg: {
         IsActive: false,
         IsAlert: false,
@@ -90,10 +96,23 @@ export default {
     if (user == null) {
       return;
     }
-    this.MyUser = JSON.parse(user)
-    this.$nextTick(() => {
-      this.StartCamera();
-    })
+    // this.MyUser = JSON.parse(user)
+    // this.$nextTick(() => {
+    //   this.StartCamera();
+    // })
+    if (this.$route.query.vConsole == "1") {
+      new VConsole().show();
+    }
+  },
+  watch: {
+    cameraSupported: {
+      immediate: true,
+      handler(newVal, oldVal) {
+        if (oldVal == false && newVal == true) {
+          this.createScan();
+        }
+      },
+    },
   },
   methods: {
     ShowMessage(title, msg1) {
@@ -128,49 +147,45 @@ export default {
       this.queryObj.keyword = '';
       this.createScan();
     },
+    qrCodeSuccessCallback(decodedText) {
+      this.queryObj.keyword = String(decodedText).trim();
+      this.isCameraOpen = false;
+      this.closeCamera()
+    },
     createScan() {
-      if (this.html5QrcodeScanner != null && this.html5QrcodeScanner.getState() == 3) {
-        //console.log("getstate", this.html5QrcodeScanner.getState())
-        this.html5QrcodeScanner.resume();
-      } else {
-
-        const config = {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          rememberLastUsedCamera: true,
-          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
-        };
-        this.html5QrcodeScanner = new Html5QrcodeScanner(
-          "qr-code-full-region",
-          config,
-          false
-        );
-        this.html5QrcodeScanner.render((decodedText) => {
-
-          this.queryObj.keyword = String(decodedText).trim();
-          this.isCameraOpen = false; // 设置相机状态为关闭
-          this.closeCamera()
-        });
+      if (this.cameraSupported == false) {
+          this.checkCameraSupport();
+          return;
       }
+      if (this.html5QrCode == null) {
+        this.html5QrCode = useHtml5QrCode('qr-code-full-region')
+      }
+      this.html5QrCode.start(this.qrCodeSuccessCallback)
       this.isCameraOpen = true;
     },
-
     closeCamera() {
-      this.isCameraOpen = false; // 设置相机状态为关闭
-      if (this.html5QrcodeScanner && this.html5QrcodeScanner.getState() == 2) {
-        //console.log("getstate", this.html5QrcodeScanner.getState())
-        this.html5QrcodeScanner.pause();
-      }
+      this.isCameraOpen = false;
+      this.html5QrCode.handleStop()
     },
-
     StartCamera() {
-
       if (!this.isCameraOpen) {
         this.createScan();
       } else {
         this.closeCamera();
       }
     },
+    async checkCameraSupport() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                console.log('相機許可權已獲得');
+                this.cameraSupported = true;
+                stream.getTracks().forEach(track => track.stop()); // 關閉相機流
+            } catch (error) {
+                console.error('無法獲得相機許可權或相機不支持：');
+                this.cameraSupported = false;
+            }
+        },
+
     SendConfirm() {
       if (this.queryObj.keyword == '') {
         this.ShowMessage('掃描QRCODE', '請先掃描QRCODE')
@@ -185,6 +200,7 @@ export default {
           this.ConfirmMessage("配送單號", `己接單號:${this.queryObj.keyword}`)
           //this.queryObj.keyword = '';
         } else {
+          //this.ConfirmMessage("配送單號", `己接單號:${this.queryObj.keyword}`)
           this.ShowMessage("掃描QRCODE錯誤", apRlt.result)
         }
       })
