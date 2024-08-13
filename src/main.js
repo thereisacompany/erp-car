@@ -31,3 +31,4 @@ createApp(App)
     .use(registerScrollSpy)
     .use(Maska)
     .mount('#app')
+
