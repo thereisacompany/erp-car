@@ -264,7 +264,7 @@
           <div class="wallet-footer">
             <ul class="d-flex justify-content-between align-items-center">
               <li class="wallet-card-item">
-                <a class="fw_6" href="javascript:;">
+                <a class="fw_6" href="javascript:;" @click="GetDataDay(1)">
                   <img
                     src="images/icon/index_service6.png"
                     style="width: 60px"
@@ -276,7 +276,7 @@
                 <a
                   class="fw_6 text-center"
                   id="btn-popup-down"
-                  @click="toggleOpenSearchModal"
+                  @click="toggleOpenRecodeModal"
                 >
                   <img
                     src="images/icon/index_service2.png"
@@ -316,7 +316,7 @@
     </div>
 
     <div class="bill-content mt-5 mb-9">
-      <div class="tf-container">
+      <div class="tf-container panel-open">
         <div class="box-search mt-3 mb-3">
           <div class="input-field">
             <span class="icon-search" @click="GetData()"></span>
@@ -384,6 +384,7 @@
                 <span
                   class="btn btn-success btn-sm"
                   v-if="a1.subType == '配送單'"
+                  @click="GoDetail(a1)"
                   >配送單</span
                 >
                 <span
@@ -504,6 +505,50 @@
       </div>
     </div>
 
+    <div class="tf-panel down" :class="openRecodeModal ? 'panel-open' : ''">
+      <div class="panel_overlay"></div>
+      <div class="panel-box panel-down">
+        <div class="header bg_white_color">
+          <div class="tf-container">
+            <div
+              class="tf-statusbar d-flex justify-content-center align-items-center"
+            >
+              <a
+                href="javascript:;"
+                class="clear-panel"
+                @click="toggleOpenRecodeModal"
+              >
+                <i class="icon-close1"></i>
+              </a>
+              <h3>快速出貨單紀錄</h3>
+            </div>
+          </div>
+        </div>
+        <div class="wrap-transfer mb-5">
+          <div class="tf-container" v-if="recodeListData.length > 0">
+            <a
+              href="javascript:;"
+              class="action-sheet-transfer"
+              v-for="recode in recodeListData"
+              :key="recode"
+              style="padding: 15px 0"
+            >
+              <div class="icon"><img src="images/user/user1.jpg" /></div>
+              <div class="content" @click="GoDetail(recode.item)">
+                <h4 class="fw_6">已完成訂單</h4>
+                <p style="margin: 0">
+                  出貨單單號: {{ recode.item.defaultNumber }}
+                </p>
+              </div>
+            </a>
+          </div>
+          <span style="padding: 15px 10px; margin: 10px"
+            >＊紀錄資料為近10筆查詢記錄＊</span
+          >
+        </div>
+      </div>
+    </div>
+
     <div
       class="tf-panel card-popup"
       :class="openSearchModal ? 'panel-open' : ''"
@@ -596,6 +641,8 @@ export default {
         supplier_id: "",
       },
       openSearchModal: false,
+      openRecodeModal: false,
+      recodeListData: [],
     };
   },
 
@@ -621,6 +668,7 @@ export default {
     } else {
       this.$nextTick(() => {
         this.GetDataDay(1);
+        this.IsQueryToday();
       });
     }
   },
@@ -744,7 +792,6 @@ export default {
       );
     },
     GetDataDay(iNum) {
-      console.log("1", iNum);
       this.queryObj.number = "";
       this.queryObj.keyword = "";
       this.queryObj.beginTime = "";
@@ -754,40 +801,59 @@ export default {
         this.queryObj.endTime = dayjs().format("YYYY-MM-DD 23:59:59");
       }
       this.GetData();
-      console.log("2", this.queryObj.beginTime);
     },
     GetData() {
       if (this.queryObj.keyword != "") {
         this.queryObj.beginTime = "";
         this.queryObj.endTime = "";
       }
-      console.log("0GetData", this.queryObj);
       server.GetDepotHeadList(this.queryObj, (apData) => {
         this.DepotHeadList = apData.rows;
         this.TotalInfo = apData.total;
         if (this.DepotHeadList.length == 1 && this.queryObj.keyword != "") {
           this.GoDetail(this.DepotHeadList[0]);
-          console.log("GetData", this.queryObj.beginTime);
-        } else {
-          this.queryObj.beginTime = "";
-          this.queryObj.endTime = "";
-          console.log("3", this.queryObj.beginTime);
         }
       });
+      this.getCookie();
     },
     GetDataMore() {
       this.queryObj.pageSize = this.queryObj.pageSize * 2;
       this.GetData();
     },
+    // 點擊日期搜尋，切換開啟快速查詢訂單modal
     toggleOpenSearchModal() {
       this.openSearchModal = !this.openSearchModal;
+      this.queryObj.beginTime = "";
+      this.queryObj.endTime = "";
     },
+    // 點擊近期查詢，切換開啟快速出貨單紀錄modal
+    toggleOpenRecodeModal() {
+      this.openRecodeModal = !this.openRecodeModal;
+    },
+    // 日期搜尋
     searchDate() {
       console.log("queryObj", this.queryObj);
       this.GetData();
       this.toggleOpenSearchModal();
       this.queryObj.beginTime = "";
       this.queryObj.endTime = "";
+    },
+    // 取得cookie紀錄塞回出貨單紀錄modal
+    getCookie() {
+      const cookieName = `recode=`;
+      const item = document.cookie.split(";");
+      for (let i = 0; i < item.length; i++) {
+        let c = item[i].trim(); // 修正，刪除多餘的空白
+        if (c.indexOf(cookieName) === 0) {
+          try {
+            this.recodeListData = JSON.parse(
+              decodeURIComponent(c.substring(cookieName.length))
+            );
+          } catch (e) {
+            console.error("Error parsing cookie value", e);
+          }
+        }
+      }
     },
   },
 };
