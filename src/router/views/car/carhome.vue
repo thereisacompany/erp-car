@@ -535,7 +535,7 @@
             >
               <div class="icon"><img src="images/user/user1.jpg" /></div>
               <div class="content" @click="GoDetail(recode)">
-                <h4 class="fw_6">已完成訂單</h4>
+                <h4 class="fw_6">{{ getStatus(recode.dstatus) }}</h4>
                 <p style="margin: 0">出貨單單號: {{ recode.defaultNumber }}</p>
               </div>
             </a>
@@ -845,6 +845,26 @@ export default {
         } catch (e) {
           console.error("Error parsing localStorage value", e);
         }
+      }
+    },
+    // 取得訂單狀態
+    getStatus(value) {
+      // dstatus (2:接單中 3:聯絡中 4:配送中 5:配送完成)
+      switch (value) {
+        case 0:
+          return "未派發";
+        case 1:
+          return "已派發";
+        case 2:
+          return "接單中";
+        case 3:
+          return "聯絡中";
+        case 4:
+          return "配送中";
+        case 5:
+          return "配送完成";
+        default:
+          return "處理中";
       }
     },
   },
