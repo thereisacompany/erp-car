@@ -535,7 +535,7 @@
             >
               <div class="icon"><img src="images/user/user1.jpg" /></div>
               <div class="content" @click="GoDetail(recode)">
-                <h4 class="fw_6">{{ getStatus(recode.dstatus) }}</h4>
+                <h4 class="fw_6">{{ getStatus(recode.status) }}</h4>
                 <p style="margin: 0">出貨單單號: {{ recode.defaultNumber }}</p>
               </div>
             </a>
