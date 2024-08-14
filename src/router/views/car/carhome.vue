@@ -534,11 +534,9 @@
               style="padding: 15px 0"
             >
               <div class="icon"><img src="images/user/user1.jpg" /></div>
-              <div class="content" @click="GoDetail(recode.item)">
+              <div class="content" @click="GoDetail(recode)">
                 <h4 class="fw_6">已完成訂單</h4>
-                <p style="margin: 0">
-                  出貨單單號: {{ recode.item.defaultNumber }}
-                </p>
+                <p style="margin: 0">出貨單單號: {{ recode.defaultNumber }}</p>
               </div>
             </a>
           </div>
@@ -576,6 +574,7 @@
         > -->
         <div class="content-card mt-3 mb-5">
           <div class="tf-container">
+            beginTime:{{ queryObj.beginTime }}
             <form class="tf-form mt-8">
               <div class="group-input">
                 <label>開始日期</label>
@@ -604,7 +603,6 @@
   </div>
 </template>
 
-
 <script>
 import { server } from "@/api";
 import dayjs from "dayjs";
@@ -613,7 +611,6 @@ import { useHtml5QrCode } from "@/api/html5-qr-code";
 
 export default {
   setup() {},
-
   data() {
     return {
       cameraSupported: false,
@@ -645,7 +642,6 @@ export default {
       recodeListData: [],
     };
   },
-
   mounted() {
     let user = localStorage.getItem("user");
     if (user == null) {
@@ -668,7 +664,6 @@ export default {
     } else {
       this.$nextTick(() => {
         this.GetDataDay(1);
-        this.IsQueryToday();
       });
     }
   },
@@ -814,7 +809,7 @@ export default {
           this.GoDetail(this.DepotHeadList[0]);
         }
       });
-      this.getCookie();
+      this.getLocalStorage();
     },
     GetDataMore() {
       this.queryObj.pageSize = this.queryObj.pageSize * 2;
@@ -835,23 +830,20 @@ export default {
       console.log("queryObj", this.queryObj);
       this.GetData();
       this.toggleOpenSearchModal();
-      this.queryObj.beginTime = "";
-      this.queryObj.endTime = "";
+
+      setTimeout(() => {
+        this.queryObj.beginTime = "";
+        this.queryObj.endTime = "";
+      }, 500);
     },
-    // 取得cookie紀錄塞回出貨單紀錄modal
-    getCookie() {
-      const cookieName = `recode=`;
-      const item = document.cookie.split(";");
-      for (let i = 0; i < item.length; i++) {
-        let c = item[i].trim(); // 修正，刪除多餘的空白
-        if (c.indexOf(cookieName) === 0) {
-          try {
-            this.recodeListData = JSON.parse(
-              decodeURIComponent(c.substring(cookieName.length))
-            );
-          } catch (e) {
-            console.error("Error parsing cookie value", e);
-          }
+    // 取得local storage紀錄塞回出貨單紀錄modal
+    getLocalStorage() {
+      const item = localStorage.getItem("recode");
+      if (item) {
+        try {
+          this.recodeListData = JSON.parse(item);
+        } catch (e) {
+          console.error("Error parsing localStorage value", e);
         }
       }
     },

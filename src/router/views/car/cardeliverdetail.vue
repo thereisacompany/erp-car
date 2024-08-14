@@ -285,8 +285,6 @@
   display: block;
 }
 </style>
-
-
 <template>
   <div>
     <div class="app-header st1">
@@ -1064,7 +1062,6 @@ export default {
       });
       server.GetDetailByNumber(this.queryObj, (jshdata) => {
         this.DetailInfo = jshdata;
-        this.addDataToCookie();
         //console.log("DetailInfo", jshdata)
       });
       //server.GetDetailList(this.queryObj, (data) => { console.log(data) });
@@ -1076,33 +1073,36 @@ export default {
         //console.log(jshdata)
         this.DriverReportList = jshdata;
       });
+
+      setTimeout(() => {
+        this.addDataToLocalStorage();
+      }, 500);
     },
     GetDataMore() {
       this.queryObj.pageSize = this.queryObj.pageSize * 2;
       this.GetData();
     },
-    setCookie(name, value) {
-      document.cookie = `recode=${encodeURIComponent(
-        JSON.stringify(value)
-      )}; path=/;`;
+    setLocalStorage(value) {
+      localStorage.setItem("recode", JSON.stringify(value));
     },
-    addDataToCookie() {
-      // 獲取當前的 cookie 陣列
-      let data = this.getCookie("recode") || [];
-      console.log("data", data);
-      // 新數據
-      const newData = { item: this.DetailInfo };
-      console.log("newData", newData);
-      // 添加新數據到陣列
-      data.push(newData);
-
-      // 如果陣列長度超過 10，刪除最舊的數據
-      if (data.length > 10) {
-        data.shift(); // 刪除第一筆（最舊）數據
+    getLocalStorage() {
+      const item = localStorage.getItem("recode");
+      if (item) {
+        try {
+          return JSON.parse(item);
+        } catch (e) {
+          console.error("Error parsing localStorage value", e);
+        }
       }
-
-      // 更新 cookie
-      this.setCookie("recode", data);
+      return [];
+    },
+    addDataToLocalStorage() {
+      let data = this.getLocalStorage();
+      data.push(this.DetailInfo);
+      if (data.length > 10) {
+        data.shift();
+      }
+      this.setLocalStorage(data);
     },
   },
 };
