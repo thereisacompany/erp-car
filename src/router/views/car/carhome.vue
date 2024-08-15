@@ -277,6 +277,7 @@
                   class="fw_6 text-center"
                   id="btn-popup-down"
                   @click="toggleOpenRecodeModal"
+                  style="cursor: pointer"
                 >
                   <img
                     src="images/icon/index_service2.png"
@@ -314,330 +315,404 @@
         </div>
       </div>
     </div>
-
-    <div class="bill-content mt-5 mb-9">
-      <div class="tf-container panel-open">
-        <div class="box-search mt-3 mb-3">
-          <div class="input-field">
-            <span class="icon-search" @click="GetData()"></span>
-            <input
-              required
-              class="search-field value_input"
-              placeholder="快速派發單查詢"
-              type="text"
-              v-model="queryObj.keyword"
-              v-on:keyup.enter="GetData"
-            />
-            <span
-              class="icon-clear"
-              @click="
-                queryObj.keyword = '';
-                GetData();
-              "
-            ></span>
+  </div>
+  <div class="bill-content mt-5 mb-9">
+    <div class="tf-container panel-open">
+      <div class="box-search mt-3 mb-3">
+        <div class="input-field">
+          <span class="icon-search" @click="GetData()"></span>
+          <input
+            required
+            class="search-field value_input"
+            placeholder="快速派發單查詢"
+            type="text"
+            v-model="queryObj.keyword"
+            v-on:keyup.enter="GetData"
+          />
+          <span
+            class="icon-clear"
+            @click="
+              queryObj.keyword = '';
+              GetData();
+            "
+          ></span>
+        </div>
+        <span class="icon-qrcode4" @click="StartCamera"></span>
+      </div>
+      <div v-show="isCameraOpen">
+        <div id="qr-code-full-region"></div>
+      </div>
+      <h3 class="fw_6 d-flex mt-3 mb-1">
+        <svg
+          width="25"
+          height="24"
+          viewBox="0 0 25 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="12.25" cy="12" r="9.5" stroke="#717171"></circle>
+          <path
+            d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
+            stroke="#717171"
+            stroke-width="1.25"
+          ></path>
+        </svg>
+        {{ IsQueryToday ? "今日" : "歷史" }}派發出貨單
+        <span v-if="TotalInfo.all != 0">
+          ({{ DepotHeadList.length }}/{{ TotalInfo.all }})</span
+        >
+      </h3>
+      <hr class="mt-2" />
+      <ul class="mt-3 mb-5">
+        <li
+          class="list-card-invoice"
+          v-for="(a1, aidx) in DepotHeadList"
+          :key="'DepotHeadList' + aidx"
+        >
+          <div class="logo">
+            <img src="images/icon/service_icon1.png" />
           </div>
-          <span class="icon-qrcode4" @click="StartCamera"></span>
-        </div>
-        <div v-show="isCameraOpen">
-          <div id="qr-code-full-region"></div>
-        </div>
-        <h3 class="fw_6 d-flex mt-3 mb-1">
-          <svg
-            width="25"
-            height="24"
-            viewBox="0 0 25 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="12.25" cy="12" r="9.5" stroke="#717171"></circle>
-            <path
-              d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
-              stroke="#717171"
-              stroke-width="1.25"
-            ></path>
-          </svg>
-          {{ IsQueryToday ? "今日" : "歷史" }}派發出貨單
-          <span v-if="TotalInfo.all != 0">
-            ({{ DepotHeadList.length }}/{{ TotalInfo.all }})</span
-          >
-        </h3>
-        <hr class="mt-2" />
-        <ul class="mt-3 mb-5">
-          <li
-            class="list-card-invoice"
-            v-for="(a1, aidx) in DepotHeadList"
-            :key="'DepotHeadList' + aidx"
-          >
-            <div class="logo">
-              <img src="images/icon/service_icon1.png" />
-            </div>
-            <div class="content-right">
-              <h4>
-                <a href="javascript:;" @click="GoDetail(a1)"
-                  >訂單編號: {{ a1.number }}
-                  <span :class="formatdStatusCSS(a1.dstatus)">{{
-                    formatdStatus(a1.dstatus)
-                  }}</span>
-                </a>
-              </h4>
-              <div>
-                <span
-                  class="btn btn-success btn-sm"
-                  v-if="a1.subType == '配送單'"
-                  @click="GoDetail(a1)"
-                  >配送單</span
-                >
-                <span
-                  class="btn btn-warning btn-sm"
-                  v-if="a1.subType == '門市取貨'"
-                  >門市取貨</span
-                >
-                <span
-                  class="btn btn-warning btn-sm"
-                  v-if="a1.subType == '門市取貨派送'"
-                  >門市取貨派送</span
-                >
-              </div>
-              <p>地址: {{ a1.address }}</p>
-              <p>
-                收件人: {{ a1.receiveName }} &nbsp;&nbsp;&nbsp;電話:{{
-                  a1.cellphone
-                }}
-              </p>
-              <ol
-                class="xprogress-bar mt-5"
-                :class="
-                  a1.dstatus == 5 ? 'doneok' : a1.dstatus == 6 ? 'bad' : ''
-                "
-              >
-                <li :class="a1.dstatus >= 2 ? 'is-active' : ''">
-                  <span>接單中</span>
-                </li>
-                <li :class="a1.dstatus >= 3 ? 'is-active' : ''">
-                  <span>聯絡中</span>
-                </li>
-                <li :class="a1.dstatus >= 4 ? 'is-active' : ''">
-                  <span>配送中</span>
-                </li>
-                <li :class="a1.dstatus >= 5 ? 'is-active' : ''">
-                  <span>配送完成</span>
-                </li>
-              </ol>
-            </div>
-          </li>
-        </ul>
-
-
-        <div class="bill-content  mt-5  mb-9">
-            <div class="tf-container">
-                <div class="box-search mt-3 mb-3">
-                    <div class="input-field">
-                        <span class="icon-search" @click="GetData()"></span>
-                        <input required class="search-field value_input" placeholder="快速派發單查詢" type="text"
-                            v-model="queryObj.keyword" v-on:keyup.enter="GetData">
-                        <span class="icon-clear" @click="queryObj.keyword = ''; GetData()"></span>
-                    </div>
-                </div>
-                <div v-show="isCameraOpen">
-                    <div id="qr-code-full-region"></div>
-                </div>
-                <h3 class="fw_6 d-flex  mt-3 mb-1"><svg width="25" height="24" viewBox="0 0 25 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12.25" cy="12" r="9.5" stroke="#717171"></circle>
-                        <path
-                            d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
-                            stroke="#717171" stroke-width="1.25"></path>
-                    </svg> {{ IsQueryToday ? '今日' : '歷史' }}派發出貨單
-                    <span v-if="TotalInfo.all != 0"> ({{ DepotHeadList.length }}/{{ TotalInfo.all }})</span>
-                </h3>
-                <hr class="mt-2">
-                <ul class="mt-3 mb-5">
-                    <li class="list-card-invoice" v-for="(a1, aidx) in DepotHeadList" :key="'DepotHeadList' + aidx">
-                        <div class="logo">
-                            <img src="images/icon/service_icon1.png">
-                        </div>
-                        <div class="content-right">
-                            <h4>
-                                <a href="javascript:;" @click="GoDetail(a1)">訂單編號: {{ a1.number }} <span
-                                        :class="formatdStatusCSS(a1.dstatus)">{{ formatdStatus(a1.dstatus) }}</span>
-                                </a>
-                            </h4>
-                            <div>
-                                <span class="btn btn-success btn-sm" v-if="a1.subType == '配送單'">配送單</span>
-                                <span class="btn btn-warning btn-sm" v-if="a1.subType == '門市取貨'">門市取貨</span>
-                                <span class="btn btn-warning btn-sm" v-if="a1.subType == '門市取貨派送'">門市取貨派送</span>
-                            </div>
-                            <p>
-                                地址: {{ a1.address }}
-                            </p>
-                            <p>
-                                收件人: {{ a1.receiveName }} &nbsp;&nbsp;&nbsp;電話:{{ a1.cellphone }}
-                            </p>
-                            <ol class="xprogress-bar mt-5"
-                                :class="a1.dstatus == 5 ? 'doneok' : (a1.dstatus == 6 ? 'bad' : '')">
-                                <li :class="a1.dstatus >= 2 ? 'is-active' : ''"><span>接單中</span></li>
-                                <li :class="a1.dstatus >= 3 ? 'is-active' : ''"><span>聯絡中</span></li>
-                                <li :class="a1.dstatus >= 4 ? 'is-active' : ''"><span>配送中</span></li>
-                                <li :class="a1.dstatus >= 5 ? 'is-active' : ''"><span>配送完成</span></li>
-                            </ol>
-
-                        </div>
-                    </li>
-
-                </ul>
-
-        <div class="list-bill-view mb-4">
-          <div
-            class="content text-center"
-            v-if="TotalInfo.all != DepotHeadList.length"
-          >
+          <div class="content-right">
             <h4>
-              <a href="javascript:;" class="fw_6" @click="GetDataMore()"
-                >更多派發紀錄</a
-              >
+              <a href="javascript:;" @click="GoDetail(a1)"
+                >訂單編號: {{ a1.number }}
+                <span :class="formatdStatusCSS(a1.dstatus)">{{
+                  formatdStatus(a1.dstatus)
+                }}</span>
+              </a>
             </h4>
-            <p>...</p>
-          </div>
-        </div>
-        <div class="tf-spacing-60"></div>
-      </div>
-    </div>
-
-        <div class="bottom-navigation-bar">
-            <div class="tf-container">
-                <ul class="tf-navigation-bar">
-
-                    <li class="today" :class="IsQueryToday ? 'active' : ''"><a
-                            class="fw_4 d-flex justify-content-center align-items-center flex-column"
-                            href="javascript:;" @click="GetDataDay(1)"><svg width="25" height="24" viewBox="0 0 25 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12.25" cy="12" r="9.5" stroke="#717171" />
-                                <path
-                                    d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
-                                    stroke="#717171" stroke-width="1.25" />
-                            </svg>
-                            今日任務</a> </li>
-                    <li :class="IsQueryToday ? '' : 'active'"><a
-                            class="fw_4 d-flex justify-content-center align-items-center flex-column"
-                            href="javascript:;" @click="GetDataDay(2)"><i class="icon-history"></i> 歷史任務</a> </li>
-                    <li><a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="javascript:;"
-                            @click="StartCamera"><i class="icon-scan-qr-code"></i> </a> </li>
-
-
-                    <li><a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="/profile"><i
-                                class="icon-user-outline"></i> 基本資料</a> </li>
-                    <li><a class="fw_6 d-flex justify-content-center align-items-center flex-column" @click="logout"
-                            href="javascript:;"><i class="icon-signout"></i> 登出</a> </li>
-                </ul>
-                <!-- <span class="line"></span> -->
-            </div>
-        </div>
-
-    <div class="tf-panel down" :class="openRecodeModal ? 'panel-open' : ''">
-      <div class="panel_overlay"></div>
-      <div class="panel-box panel-down">
-        <div class="header bg_white_color">
-          <div class="tf-container">
-            <div
-              class="tf-statusbar d-flex justify-content-center align-items-center"
-            >
-              <a
-                href="javascript:;"
-                class="clear-panel"
-                @click="toggleOpenRecodeModal"
+            <div>
+              <span
+                class="btn btn-success btn-sm"
+                v-if="a1.subType == '配送單'"
+                @click="GoDetail(a1)"
+                >配送單</span
               >
-                <i class="icon-close1"></i>
-              </a>
-              <h3>快速出貨單紀錄</h3>
+              <span
+                class="btn btn-warning btn-sm"
+                v-if="a1.subType == '門市取貨'"
+                >門市取貨</span
+              >
+              <span
+                class="btn btn-warning btn-sm"
+                v-if="a1.subType == '門市取貨派送'"
+                >門市取貨派送</span
+              >
+            </div>
+            <p>地址: {{ a1.address }}</p>
+            <p>
+              收件人: {{ a1.receiveName }} &nbsp;&nbsp;&nbsp;電話:{{
+                a1.cellphone
+              }}
+            </p>
+            <ol
+              class="xprogress-bar mt-5"
+              :class="a1.dstatus == 5 ? 'doneok' : a1.dstatus == 6 ? 'bad' : ''"
+            >
+              <li :class="a1.dstatus >= 2 ? 'is-active' : ''">
+                <span>接單中</span>
+              </li>
+              <li :class="a1.dstatus >= 3 ? 'is-active' : ''">
+                <span>聯絡中</span>
+              </li>
+              <li :class="a1.dstatus >= 4 ? 'is-active' : ''">
+                <span>配送中</span>
+              </li>
+              <li :class="a1.dstatus >= 5 ? 'is-active' : ''">
+                <span>配送完成</span>
+              </li>
+            </ol>
+          </div>
+        </li>
+      </ul>
+
+      <div class="bill-content mt-5 mb-9">
+        <div class="tf-container">
+          <div class="box-search mt-3 mb-3">
+            <div class="input-field">
+              <span class="icon-search" @click="GetData()"></span>
+              <input
+                required
+                class="search-field value_input"
+                placeholder="快速派發單查詢"
+                type="text"
+                v-model="queryObj.keyword"
+                v-on:keyup.enter="GetData"
+              />
+              <span
+                class="icon-clear"
+                @click="
+                  queryObj.keyword = '';
+                  GetData();
+                "
+              ></span>
             </div>
           </div>
-        </div>
-        <div class="wrap-transfer mb-5">
-          <div class="tf-container" v-if="recodeListData.length > 0">
-            <a
-              href="javascript:;"
-              class="action-sheet-transfer"
-              v-for="recode in recodeListData"
-              :key="recode"
-              style="padding: 15px 0"
+          <div v-show="isCameraOpen">
+            <div id="qr-code-full-region"></div>
+          </div>
+          <h3 class="fw_6 d-flex mt-3 mb-1">
+            <svg
+              width="25"
+              height="24"
+              viewBox="0 0 25 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <div class="icon"><img src="images/user/user1.jpg" /></div>
-              <div class="content" @click="GoDetail(recode)">
-                <h4 class="fw_6">{{ getStatus(recode.status) }}</h4>
-                <p style="margin: 0">出貨單單號: {{ recode.defaultNumber }}</p>
+              <circle cx="12.25" cy="12" r="9.5" stroke="#717171"></circle>
+              <path
+                d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
+                stroke="#717171"
+                stroke-width="1.25"
+              ></path>
+            </svg>
+            {{ IsQueryToday ? "今日" : "歷史" }}派發出貨單
+            <span v-if="TotalInfo.all != 0">
+              ({{ DepotHeadList.length }}/{{ TotalInfo.all }})</span
+            >
+          </h3>
+          <hr class="mt-2" />
+          <ul class="mt-3 mb-5">
+            <li
+              class="list-card-invoice"
+              v-for="(a1, aidx) in DepotHeadList"
+              :key="'DepotHeadList' + aidx"
+            >
+              <div class="logo">
+                <img src="images/icon/service_icon1.png" />
               </div>
-            </a>
-          </div>
-          <span style="padding: 15px 10px; margin: 10px"
-            >＊紀錄資料為近10筆查詢記錄＊</span
-          >
-        </div>
-      </div>
-    </div>
+              <div class="content-right">
+                <h4>
+                  <a href="javascript:;" @click="GoDetail(a1)"
+                    >訂單編號: {{ a1.number }}
+                    <span :class="formatdStatusCSS(a1.dstatus)">{{
+                      formatdStatus(a1.dstatus)
+                    }}</span>
+                  </a>
+                </h4>
+                <div>
+                  <span
+                    class="btn btn-success btn-sm"
+                    v-if="a1.subType == '配送單'"
+                    >配送單</span
+                  >
+                  <span
+                    class="btn btn-warning btn-sm"
+                    v-if="a1.subType == '門市取貨'"
+                    >門市取貨</span
+                  >
+                  <span
+                    class="btn btn-warning btn-sm"
+                    v-if="a1.subType == '門市取貨派送'"
+                    >門市取貨派送</span
+                  >
+                </div>
+                <p>地址: {{ a1.address }}</p>
+                <p>
+                  收件人: {{ a1.receiveName }} &nbsp;&nbsp;&nbsp;電話:{{
+                    a1.cellphone
+                  }}
+                </p>
+                <ol
+                  class="xprogress-bar mt-5"
+                  :class="
+                    a1.dstatus == 5 ? 'doneok' : a1.dstatus == 6 ? 'bad' : ''
+                  "
+                >
+                  <li :class="a1.dstatus >= 2 ? 'is-active' : ''">
+                    <span>接單中</span>
+                  </li>
+                  <li :class="a1.dstatus >= 3 ? 'is-active' : ''">
+                    <span>聯絡中</span>
+                  </li>
+                  <li :class="a1.dstatus >= 4 ? 'is-active' : ''">
+                    <span>配送中</span>
+                  </li>
+                  <li :class="a1.dstatus >= 5 ? 'is-active' : ''">
+                    <span>配送完成</span>
+                  </li>
+                </ol>
+              </div>
+            </li>
+          </ul>
 
-    <div
-      class="tf-panel card-popup"
-      :class="openSearchModal ? 'panel-open' : ''"
-    >
-      <div class="panel_overlay"></div>
-      <div class="panel-box panel-down">
-        <div class="header">
-          <div class="tf-container">
+          <div class="list-bill-view mb-4">
             <div
-              class="tf-statusbar d-flex justify-content-center align-items-center"
+              class="content text-center"
+              v-if="TotalInfo.all != DepotHeadList.length"
             >
-              <a
-                href="javascript:;"
-                class="clear-panel"
-                @click="toggleOpenSearchModal"
-              >
-                <i class="icon-left"></i>
-              </a>
-              <h3>快速查詢訂單</h3>
+              <h4>
+                <a href="javascript:;" class="fw_6" @click="GetDataMore()"
+                  >更多派發紀錄</a
+                >
+              </h4>
+              <p>...</p>
             </div>
           </div>
+          <div class="tf-spacing-60"></div>
         </div>
-        <!-- <span style="color: red">
+      </div>
+
+      <div class="bottom-navigation-bar">
+        <div class="tf-container">
+          <ul class="tf-navigation-bar">
+            <li class="today" :class="IsQueryToday ? 'active' : ''">
+              <a
+                class="fw_4 d-flex justify-content-center align-items-center flex-column"
+                href="javascript:;"
+                @click="GetDataDay(1)"
+                ><svg
+                  width="25"
+                  height="24"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="12.25" cy="12" r="9.5" stroke="#717171" />
+                  <path
+                    d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
+                    stroke="#717171"
+                    stroke-width="1.25"
+                  />
+                </svg>
+                今日任務</a
+              >
+            </li>
+            <li :class="IsQueryToday ? '' : 'active'">
+              <a
+                class="fw_4 d-flex justify-content-center align-items-center flex-column"
+                href="javascript:;"
+                @click="GetDataDay(2)"
+                ><i class="icon-history"></i> 歷史任務</a
+              >
+            </li>
+            <li>
+              <a
+                class="fw_4 d-flex justify-content-center align-items-center flex-column"
+                href="javascript:;"
+                @click="StartCamera"
+                ><i class="icon-scan-qr-code"></i>
+              </a>
+            </li>
+
+            <li>
+              <a
+                class="fw_4 d-flex justify-content-center align-items-center flex-column"
+                href="/profile"
+                ><i class="icon-user-outline"></i> 基本資料</a
+              >
+            </li>
+            <li>
+              <a
+                class="fw_6 d-flex justify-content-center align-items-center flex-column"
+                @click="logout"
+                href="javascript:;"
+                ><i class="icon-signout"></i> 登出</a
+              >
+            </li>
+          </ul>
+          <!-- <span class="line"></span> -->
+        </div>
+      </div>
+
+      <div class="tf-panel down" :class="openRecodeModal ? 'panel-open' : ''">
+        <div class="panel_overlay"></div>
+        <div class="panel-box panel-down" style="left: 0">
+          <div class="header bg_white_color">
+            <div class="tf-container">
+              <div
+                class="tf-statusbar d-flex justify-content-center align-items-center"
+              >
+                <a
+                  href="javascript:;"
+                  class="clear-panel"
+                  @click="toggleOpenRecodeModal"
+                >
+                  <i class="icon-close1"></i>
+                </a>
+                <h3>快速出貨單紀錄</h3>
+              </div>
+            </div>
+          </div>
+          <div class="wrap-transfer mb-5">
+            <div class="tf-container" v-if="recodeListData.length > 0">
+              <a
+                href="javascript:;"
+                class="action-sheet-transfer"
+                v-for="recode in recodeListData"
+                :key="recode"
+                style="padding: 15px 0"
+              >
+                <div class="icon"><img src="images/user/user1.jpg" /></div>
+                <div class="content" @click="GoDetail(recode)">
+                  <h4 class="fw_6">{{ getStatus(recode.status) }}</h4>
+                  <p style="margin: 0">
+                    出貨單單號: {{ recode.defaultNumber }}
+                  </p>
+                </div>
+              </a>
+            </div>
+            <span style="padding: 15px 10px; margin: 10px"
+              >＊紀錄資料為近10筆查詢記錄＊</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="tf-panel card-popup"
+        :class="openSearchModal ? 'panel-open' : ''"
+      >
+        <div class="panel_overlay"></div>
+        <div class="panel-box panel-down" style="left: 0">
+          <div class="header">
+            <div class="tf-container">
+              <div
+                class="tf-statusbar d-flex justify-content-center align-items-center"
+              >
+                <a
+                  href="javascript:;"
+                  class="clear-panel"
+                  @click="toggleOpenSearchModal"
+                >
+                  <i class="icon-left"></i>
+                </a>
+                <h3>快速查詢訂單</h3>
+              </div>
+            </div>
+          </div>
+          <!-- <span style="color: red">
           queryObj.beginTime-{{ queryObj.beginTime }}</span
         > -->
-        <div class="content-card mt-3 mb-5">
-          <div class="tf-container">
-            beginTime:{{ queryObj.beginTime }}
-            <form class="tf-form mt-8">
-              <div class="group-input">
-                <label>開始日期</label>
-                <input type="date" v-model="queryObj.beginTime" />
-              </div>
-              <div class="group-input">
-                <label>結束日期</label>
-                <input type="date" v-model="queryObj.endTime" />
-              </div>
-              <div class="tf-spacing-20"></div>
-              <!-- <div class="bottom-navigation-bar bottom-btn-fixed st2">
+          <div class="content-card mt-3 mb-5">
+            <div class="tf-container">
+              <form class="tf-form mt-8">
+                <div class="group-input">
+                  <label>開始日期</label>
+                  <input type="date" v-model="queryObj.beginTime" />
+                </div>
+                <div class="group-input">
+                  <label>結束日期</label>
+                  <input type="date" v-model="queryObj.endTime" />
+                </div>
+                <div class="tf-spacing-20"></div>
+                <!-- <div class="bottom-navigation-bar bottom-btn-fixed st2">
                 <button @click="searchDate">快速查找</button>
               </div> -->
-            </form>
-            <button
-              @click="searchDate"
-              style="background-color: #f2cc4d; color: black"
-            >
-              快速查找
-            </button>
-            <div class="tf-spacing-20"></div>
+              </form>
+              <button
+                @click="searchDate"
+                style="background-color: #f2cc4d; color: black"
+              >
+                快速查找
+              </button>
+              <div class="tf-spacing-20"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-
-
-
-
-
-
-
-    </div>
 </template>
 
 <script>

@@ -290,9 +290,9 @@
 }
 
 .right-info-btn {
-  position: absolute;
+  /* position: absolute;
   top: 1px;
-  left: 80px;
+  left: 80px; */
   font-size: 12px;
 }
 
@@ -351,9 +351,10 @@ tr:nth-child(even) {
   background-color: #ffffff11;
 }
 
+/*
 tr.isDefault td {
   color: blue;
-}
+} */
 
 .table-container {
   max-height: 100px;
@@ -522,71 +523,185 @@ tr.isDefault td {
                 @click="SetOrderStatus(2)"
               />
             </li>
-            <li class="tf-card-list medium bt-line">
+            <li class="tf-card-list medium bt-line" style="flex-wrap: wrap">
               <div class="logo">
                 <img src="images/icon/index_service6.png" style="width: 43px" />
               </div>
               <div class="info">
-                <h4 class="fw_6">
+                <h4
+                  class="fw_6"
+                  style="display: flex; justify-content: space-between"
+                >
                   <a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a>
+                  <div class="right-info-btn">
+                    <a
+                      href="javascript:;"
+                      class="query-history"
+                      @click="
+                        IsAgreedDateHistory = false;
+                        IsAgreedDateChange = !IsAgreedDateChange;
+                        NewAgreed.date = '';
+                        NewAgreed.time = '';
+                      "
+                    >
+                      {{
+                        IsAgreedDateChange == true
+                          ? "取消修改約配日 ▲"
+                          : "修改約配日 ▼"
+                      }}
+                    </a>
+                    <a
+                      href="javascript:;"
+                      class="query-history"
+                      @click="
+                        IsAgreedDateChange = false;
+                        IsAgreedDateHistory = !IsAgreedDateHistory;
+                      "
+                    >
+                      {{
+                        IsAgreedDateHistory == true
+                          ? "關閉記錄 ▲"
+                          : "查詢記錄 ▼"
+                      }}
+                    </a>
+                  </div>
                 </h4>
                 <p>
                   連絡電話: {{ DetailInfo.cellphone }}
                   {{ DetailInfo.receiveName }}
                 </p>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                  "
+                >
+                  <div class="close-recode" style="width: 90%">
+                    <!-- <h4 class="fw_6">
+                  <a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a>
+                  <div class="right-info-btn">
+                    <a
+                      href="javascript:;"
+                      class="query-history"
+                      @click="
+                        IsAgreedDateHistory = false;
+                        IsAgreedDateChange = !IsAgreedDateChange;
+                        NewAgreed.date = '';
+                        NewAgreed.time = '';
+                      "
+                    >
+                      {{
+                        IsAgreedDateChange == true
+                          ? "取消修改約配日 ▲"
+                          : "修改約配日 ▼"
+                      }}
+                    </a>
+                    <a
+                      href="javascript:;"
+                      class="query-history"
+                      @click="
+                        IsAgreedDateChange = false;
+                        IsAgreedDateHistory = !IsAgreedDateHistory;
+                      "
+                    >
+                      {{
+                        IsAgreedDateHistory == true
+                          ? "關閉記錄 ▲"
+                          : "查詢記錄 ▼"
+                      }}
+                    </a>
+                  </div>
+                </h4>
+                <p style="border: 1px solid red">
+                  連絡電話: {{ DetailInfo.cellphone }}
+                  {{ DetailInfo.receiveName }}
+                </p>-->
+                    <div class="sub-history" v-if="IsAgreedDateChange == true">
+                      <span>日期:</span
+                      ><input type="date" v-model="NewAgreed.date" />
+                      <span>時間:</span
+                      ><input type="time" v-model="NewAgreed.time" />
+                      <div class="btn-group btn-group-sm btn-wrap">
+                        <a
+                          href="javascript:;"
+                          class="btn btn-primary"
+                          @click="ChangeAgreedDate()"
+                          >確認</a
+                        >
+                        <a
+                          href="javascript:;"
+                          class="btn btn-secondary"
+                          @click="IsAgreedDateChange = false"
+                          >取消</a
+                        >
+                      </div>
+                    </div>
+                    <div
+                      class="sub-history table-container"
+                      v-if="IsAgreedDateHistory == true"
+                    >
+                      <table>
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">日期</th>
+                            <th scope="col">修改者</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(a1, a1idx) in driver.agreedDelivery"
+                            :key="'agreed' + a1idx"
+                            :class="a1.isDefault == true ? 'isDefault' : ''"
+                          >
+                            <th scope="row">{{ a1idx + 1 }}</th>
+                            <td>{{ formatDateTime(a1.datetime) }}</td>
+                            <td>{{ a1.name }}</td>
+                          </tr>
+                        </tbody>
+                        <!-- <tr
+                        v-for="(a1, a1idx) in driver.agreedDelivery"
+                        :key="'agreed' + a1idx"
+                        :class="a1.isDefault == true ? 'isDefault' : ''"
+                      >
+                        <td>#{{ a1idx + 1 }}</td>
+                        <td>日期:{{ formatDateTime(a1.datetime) }}</td>
+                        <td>修改者:{{ a1.name }}</td>
+                      </tr> -->
+                      </table>
+                    </div>
+                    <div class="btn-wrap" v-if="IsAgreedDateHistory == true">
+                      <a
+                        href="javascript:;"
+                        class="btn btn-secondary btn-sm"
+                        style="width: 100%"
+                        @click="IsAgreedDateHistory = false"
+                        >關閉記錄 ▲</a
+                      >
+                    </div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    class="tf-checkbox circle-check"
+                    :checked="formatDeliveryStatus(3)"
+                    @click="SetOrderStatus(3)"
+                  />
+                </div>
               </div>
-              <input
+              <!-- <input
                 type="checkbox"
                 class="tf-checkbox circle-check"
                 :checked="formatDeliveryStatus(3)"
                 @click="SetOrderStatus(3)"
-              />
-                <h4 class="fw_6"><a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a>
-                  <div class="right-info-btn">
+              /> -->
 
-                    <a href="javascript:;" class="query-history"
-                      @click="IsAgreedDateHistory = false; IsAgreedDateChange = !IsAgreedDateChange; NewAgreed.date = ''; NewAgreed.time = ''">
-                      {{ IsAgreedDateChange == true ? '取消修改約配日 ▲' : '修改約配日 ▼' }}
-                    </a>
-                    <a href="javascript:;" class="query-history"
-                      @click="IsAgreedDateChange = false; IsAgreedDateHistory = !IsAgreedDateHistory">
-                      {{ IsAgreedDateHistory == true ? '關閉記錄 ▲' : '查詢記錄 ▼' }}
-                    </a>
-                  </div>
-                </h4>
-                <p>連絡電話: {{ DetailInfo.cellphone }} {{ DetailInfo.receiveName }} </p>
-                <div class="sub-history" v-if="IsAgreedDateChange == true">
-                  <span>日期:</span><input type="date" v-model="NewAgreed.date">
-                  <span>時間:</span><input type="time" v-model="NewAgreed.time">
-                  <div class="btn-group btn-group-sm btn-wrap">
-                    <a href="javascript:;" class="btn btn-primary" @click="ChangeAgreedDate()">確認</a>
-                    <a href="javascript:;" class="btn btn-secondary" @click="IsAgreedDateChange = false">取消</a>
-                  </div>
-                </div>
-                <div class="sub-history table-container" v-if="IsAgreedDateHistory == true">
-                  <table>
-                    <tr v-for="(a1, a1idx) in driver.agreedDelivery" :key="'agreed' + a1idx"
-                      :class="a1.isDefault == true ? 'isDefault' : ''">
-                      <td>
-                        #{{a1idx+1}}
-                      </td>
-                      <td>
-                        日期:{{ formatDateTime(a1.datetime) }}
-                      </td>
-                      <td>
-                        修改者:{{ a1.name }}
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <div class="btn-wrap " v-if="IsAgreedDateHistory == true">
-                    <a href="javascript:;" class="btn btn-secondary btn-sm" style="width:100%" @click="IsAgreedDateHistory = false">關閉記錄 ▲</a>
-                  </div>
-              </div>
-
-              <input type="checkbox" class="tf-checkbox circle-check" :checked="formatDeliveryStatus(3)"
-                @click="SetOrderStatus(3);">
-
+              <!-- <input
+                type="checkbox"
+                class="tf-checkbox circle-check"
+                :checked="formatDeliveryStatus(3)"
+                @click="SetOrderStatus(3)"
+              /> -->
             </li>
             <li class="tf-card-list medium bt-line">
               <div class="logo">
@@ -686,7 +801,6 @@ tr.isDefault td {
               <div class="tf-spacing-12"></div>
 
               <ul class="bank-box">
-
                 <li v-for="(f1, fidx) in filelist" :key="'file-' + fidx">
                   <span class="bank-list">
                     <img
@@ -716,8 +830,13 @@ tr.isDefault td {
                     @click="DeleteFile1(f1)"
                     >&nbsp;<i class="bx bx-x"></i
                   ></a>
-                  <a href="javascript:;" v-if="driver.status != 5" class="text-danger" @click="DeleteFile1(f1)">&nbsp;<i
-                      class="bx bx-x"></i></a>
+                  <a
+                    href="javascript:;"
+                    v-if="driver.status != 5"
+                    class="text-danger"
+                    @click="DeleteFile1(f1)"
+                    >&nbsp;<i class="bx bx-x"></i
+                  ></a>
                 </li>
               </ul>
             </div>
@@ -766,8 +885,13 @@ tr.isDefault td {
           <h4 class="fw_6 text-center">
             {{ modelMsg.title }}
           </h4>
-          <p class="fw_4 mt-2 text-center" v-for="(m1, m1idx) in String(modelMsg.msg).split('\n')"
-            :key="'modelMsg-msg' + m1idx">{{ m1 }}</p>
+          <p
+            class="fw_4 mt-2 text-center"
+            v-for="(m1, m1idx) in String(modelMsg.msg).split('\n')"
+            :key="'modelMsg-msg' + m1idx"
+          >
+            {{ m1 }}
+          </p>
         </div>
         <div class="bottom" :class="modelMsg.IsAlert ? 'OneBottomBtn' : ''">
           <a
@@ -1201,6 +1325,43 @@ export default {
         }
       );
     },
+    ChangeAgreedDate() {
+      if (this.DetailInfo.number == null || this.DetailInfo.number == "")
+        return;
+      if (!common.IsDate(this.NewAgreed.date)) {
+        this.ShowMessage("修改約配日", "請選擇新的約配日期");
+        return;
+      }
+      if (!common.IsTime(this.NewAgreed.time + ":00")) {
+        this.ShowMessage("修改約配日", "請選擇新的約配時間");
+        return;
+      }
+
+      let wObj = {};
+      wObj.number = this.DetailInfo.number;
+      wObj.datetime = `${dayjs(this.NewAgreed.date).format("YYYY-MM-DD")} ${
+        this.NewAgreed.time
+      }:00`;
+
+      server.UpdateDeliveryAgreed(wObj, (apRlt) => {
+        if (apRlt != null && apRlt.msg == "操作成功") {
+          this.ShowMessage(
+            "已修改約配日完成",
+            `日期: ${dayjs(this.NewAgreed.date).format("YYYY-MM-DD")}\n時間: ${
+              this.NewAgreed.time
+            }`
+          );
+          this.GetData();
+        } else {
+          this.ShowMessage("修改約配日", apRlt.message);
+        }
+      });
+      this.IsAgreedDateChange = false;
+
+      // if(common.IsDate(thi))
+      //       DetailInfo.number
+      //       UpdateDeliveryAgreed
+    },
     GetData() {
       server.GetDeliveryData(this.queryObj, (jshdata) => {
         this.driver.driverId = jshdata.driverId;
@@ -1212,6 +1373,7 @@ export default {
         this.driver.filePath = jshdata.filePath;
         this.driver.status = Number(jshdata.status);
         this.driver.deliveryStatusList = jshdata.deliveryStatusList;
+        this.driver.agreedDelivery = jshdata.agreedDelivery || [];
         if (this.driver.filePath == null || this.driver.filePath == "") {
           this.filelist = [];
         } else {
@@ -1220,6 +1382,7 @@ export default {
       });
       server.GetDetailByNumber(this.queryObj, (jshdata) => {
         this.DetailInfo = jshdata;
+
         //console.log("DetailInfo", jshdata)
       });
       //server.GetDetailList(this.queryObj, (data) => { console.log(data) });
@@ -1231,10 +1394,6 @@ export default {
         //console.log(jshdata)
         this.DriverReportList = jshdata;
       });
-
-      setTimeout(() => {
-        this.addDataToLocalStorage();
-      }, 500);
     },
     GetDataMore() {
       this.queryObj.pageSize = this.queryObj.pageSize * 2;
