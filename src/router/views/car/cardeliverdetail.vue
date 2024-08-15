@@ -287,6 +287,85 @@
   height: auto;
   display: block;
 }
+
+.fw_6 {
+  position: relative;
+}
+
+.right-info-btn {
+  position: absolute;
+  top: 1px;
+  left: 80px;
+  font-size: 12px;
+}
+
+.right-info-btn a {
+  color: #888;
+  margin-right: 10px
+}
+
+.sub-history {
+
+  background-color: #f8f8f8;
+  padding: 3px 3px;
+  margin: 5px 0px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+}
+
+.sub-history .btn-wrap {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display:flex;
+}
+
+.sub-history input[type='date'],
+.sub-history input[type='time'] {
+  padding: 8px 15px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+table {
+  border: 1px solid #aaa;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table td,
+table th {
+  border-top: 1px solid #00000011;
+  border-bottom: 1px solid #00000011;
+  padding: 3px 0px;
+  margin:0px;
+  text-align: left;
+  vertical-align: middle;
+  
+}
+
+td {
+  color: #888;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff99;
+}
+
+tr:nth-child(even) {
+  background-color: #ffffff11;
+}
+
+tr.isDefault td {
+  color: blue;
+}
+
+.table-container {
+  max-height: 100px;
+  /* 根据需要调整高度 */
+  overflow-y: auto;
+
+}
 </style>
 
 
@@ -405,11 +484,52 @@
                 <img src="images/icon/index_service6.png" style="width:43px;">
               </div>
               <div class="info">
-                <h4 class="fw_6"><a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a></h4>
+                <h4 class="fw_6"><a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a>
+                  <div class="right-info-btn">
+
+                    <a href="javascript:;" class="query-history"
+                      @click="IsAgreedDateHistory = false; IsAgreedDateChange = !IsAgreedDateChange; NewAgreed.date = ''; NewAgreed.time = ''">
+                      {{ IsAgreedDateChange == true ? '取消修改約配日 ▲' : '修改約配日 ▼' }}
+                    </a>
+                    <a href="javascript:;" class="query-history"
+                      @click="IsAgreedDateChange = false; IsAgreedDateHistory = !IsAgreedDateHistory">
+                      {{ IsAgreedDateHistory == true ? '關閉記錄 ▲' : '查詢記錄 ▼' }}
+                    </a>
+                  </div>
+                </h4>
                 <p>連絡電話: {{ DetailInfo.cellphone }} {{ DetailInfo.receiveName }} </p>
+                <div class="sub-history" v-if="IsAgreedDateChange == true">
+                  <span>日期:</span><input type="date" v-model="NewAgreed.date">
+                  <span>時間:</span><input type="time" v-model="NewAgreed.time">
+                  <div class="btn-group btn-group-sm btn-wrap">
+                    <a href="javascript:;" class="btn btn-primary" @click="ChangeAgreedDate()">確認</a>
+                    <a href="javascript:;" class="btn btn-secondary" @click="IsAgreedDateChange = false">取消</a>
+                  </div>
+                </div>
+                <div class="sub-history table-container" v-if="IsAgreedDateHistory == true">
+                  <table>
+                    <tr v-for="(a1, a1idx) in driver.agreedDelivery" :key="'agreed' + a1idx"
+                      :class="a1.isDefault == true ? 'isDefault' : ''">
+                      <td>
+                        #{{a1idx+1}}
+                      </td>
+                      <td>
+                        日期:{{ formatDateTime(a1.datetime) }}
+                      </td>
+                      <td>
+                        修改者:{{ a1.name }}
+                      </td>
+                    </tr>
+                  </table>                 
+                </div>
+                <div class="btn-wrap " v-if="IsAgreedDateHistory == true">
+                    <a href="javascript:;" class="btn btn-secondary btn-sm" style="width:100%" @click="IsAgreedDateHistory = false">關閉記錄 ▲</a>
+                  </div>
               </div>
+
               <input type="checkbox" class="tf-checkbox circle-check" :checked="formatDeliveryStatus(3)"
                 @click="SetOrderStatus(3);">
+
             </li>
             <li class="tf-card-list medium bt-line">
               <div class="logo">
@@ -477,6 +597,7 @@
 
 
               <ul class="bank-box">
+
                 <li v-for="(f1, fidx) in filelist" :key="'file-' + fidx">
                   <span class="bank-list">
                     <img class="logo-bank" v-if="CheckIsImage(f1)" :src="GetAccessFile1(f1)" @click="ShowImage(f1)" />
@@ -485,7 +606,8 @@
                     <a v-else href="javascript:;" @click="ShowImage(f1)" style="word-break:break-all">
                       {{ f1.split('/').pop() }}</a>
                   </span>
-                  <a href="javascript:;" class="text-danger" @click="DeleteFile1(f1)">&nbsp;<i class="bx bx-x"></i></a>
+                  <a href="javascript:;" v-if="driver.status != 5" class="text-danger" @click="DeleteFile1(f1)">&nbsp;<i
+                      class="bx bx-x"></i></a>
                 </li>
 
               </ul>
@@ -520,7 +642,8 @@
           <h4 class="fw_6 text-center">
             {{ modelMsg.title }}
           </h4>
-          <p class="fw_4 mt-2 text-center">{{ modelMsg.msg }}</p>
+          <p class="fw_4 mt-2 text-center" v-for="(m1, m1idx) in String(modelMsg.msg).split('\n')"
+            :key="'modelMsg-msg' + m1idx">{{ m1 }}</p>
         </div>
         <div class="bottom" :class="modelMsg.IsAlert ? 'OneBottomBtn' : ''">
 
@@ -601,6 +724,12 @@ export default {
       DriverReportList: [],
       filelist: [],
       DetailInfo: {},
+      NewAgreed: {
+        date: '',
+        time: '',
+      },
+      IsAgreedDateChange: false,
+      IsAgreedDateHistory: false,
 
       showImageURL: '',
       showVideoURL: '',
@@ -777,14 +906,22 @@ export default {
       if (dayjs(datestr).isValid()) return dayjs(datestr).format("YYYY/MM/DD");
       return "";
     },
+    formatDateTime(datestr) {
+      if (dayjs(datestr).isValid()) return dayjs(datestr).format("YYYY/MM/DD HH:mm:ss");
+      return "";
+    },
     SetOrderStatusConfirm() {
       let orderStatus = this.modelMsg.data;
       if (!common.IsNumber(orderStatus)) return;
 
       server.SetOrderStatus({ headerId: this.DetailInfo.id, orderStatus: orderStatus }, (apRlt) => {
-        if (apRlt != null && apRlt.msg == "操作成功") {
-          this.CloseModal();
-          this.GetData();
+        if (apRlt != null) {
+          if (apRlt.msg == "操作成功") {
+            this.CloseModal();
+            this.GetData();
+          } else {
+            this.ShowMessage("訂單錯誤", apRlt.result)
+          }
         }
       })
     },
@@ -843,7 +980,13 @@ export default {
           this.modelMsg.iscritical = true;
           break;
       }
-
+      if (NewStatus == 5 && this.filelist.length == 0) {
+        this.modelMsg.title = `無法完成訂單`
+        this.modelMsg.msg = `此配送單未上傳檔案，無法完成訂單!`
+        this.modelMsg.IsActive = true;
+        this.modelMsg.IsAlert = true;
+        return;
+      }
       this.modelMsg.IsActive = true;
       this.modelMsg.IsAlert = false;
       // $("#modalhome1").modal({ show: true });
@@ -868,7 +1011,7 @@ export default {
         return false;
       }
       server.driverReport({ detailId: this.DetailInfo.id, message: this.customerReportMsg }, (apRlt) => {
-        console.log("aprlt", apRlt)
+        //console.log("aprlt", apRlt)
         if (apRlt != null && apRlt.msg == "操作成功") {
           this.customerReportMsg = "";
           this.ShowMessage("送出問題備註", "己送出")
@@ -896,6 +1039,38 @@ export default {
       })
 
     },
+    ChangeAgreedDate() {
+      if (this.DetailInfo.number == null || this.DetailInfo.number == '') return;
+      if (!common.IsDate(this.NewAgreed.date)) {
+        this.ShowMessage("修改約配日", "請選擇新的約配日期")
+        return
+      }
+      if (!common.IsTime(this.NewAgreed.time + ":00")) {
+        this.ShowMessage("修改約配日", "請選擇新的約配時間")
+        return
+      }
+
+
+      let wObj = {};
+      wObj.number = this.DetailInfo.number;
+      wObj.datetime = `${dayjs(this.NewAgreed.date).format("YYYY-MM-DD")} ${this.NewAgreed.time}:00`;
+
+      server.UpdateDeliveryAgreed(wObj, (apRlt) => {
+        if (apRlt != null && apRlt.msg == "操作成功") {
+
+          this.ShowMessage("已修改約配日完成", `日期: ${dayjs(this.NewAgreed.date).format("YYYY-MM-DD")}\n時間: ${this.NewAgreed.time}`)
+          this.GetData();
+        } else {
+          this.ShowMessage("修改約配日", apRlt.message)
+        }
+
+      })
+      this.IsAgreedDateChange = false;
+
+      // if(common.IsDate(thi))
+      //       DetailInfo.number 
+      //       UpdateDeliveryAgreed
+    },
     GetData() {
       server.GetDeliveryData(this.queryObj, (jshdata) => {
 
@@ -908,6 +1083,7 @@ export default {
         this.driver.filePath = jshdata.filePath
         this.driver.status = Number(jshdata.status)
         this.driver.deliveryStatusList = jshdata.deliveryStatusList
+        this.driver.agreedDelivery = jshdata.agreedDelivery || [];
         if (this.driver.filePath == null || this.driver.filePath == "") {
           this.filelist = []
         } else {

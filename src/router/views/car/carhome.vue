@@ -289,7 +289,6 @@
                             v-model="queryObj.keyword" v-on:keyup.enter="GetData">
                         <span class="icon-clear" @click="queryObj.keyword = ''; GetData()"></span>
                     </div>
-                    <span class="icon-qrcode4" @click="StartCamera"></span>
                 </div>
                 <div v-show="isCameraOpen">
                     <div id="qr-code-full-region"></div>
@@ -367,14 +366,14 @@
                     <li :class="IsQueryToday ? '' : 'active'"><a
                             class="fw_4 d-flex justify-content-center align-items-center flex-column"
                             href="javascript:;" @click="GetDataDay(2)"><i class="icon-history"></i> 歷史任務</a> </li>
-                    <li><a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="/qrcode"><i
-                                class="icon-scan-qr-code"></i> </a> </li>
+                    <li><a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="javascript:;"
+                            @click="StartCamera"><i class="icon-scan-qr-code"></i> </a> </li>
 
 
                     <li><a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="/profile"><i
                                 class="icon-user-outline"></i> 基本資料</a> </li>
                     <li><a class="fw_6 d-flex justify-content-center align-items-center flex-column" @click="logout"
-                            href="javascript:;"><i class="icon-signout"></i> 登出</a> </li>                   
+                            href="javascript:;"><i class="icon-signout"></i> 登出</a> </li>
                 </ul>
                 <!-- <span class="line"></span> -->
             </div>
@@ -384,9 +383,9 @@
 
 
 
-     
 
-       
+
+
 
     </div>
 </template>
@@ -475,7 +474,7 @@ export default {
         cameraSupported: {
             immediate: true,
             handler(newVal, oldVal) {
-                if (oldVal==false &&  newVal==true) {
+                if (oldVal == false && newVal == true) {
                     this.createScan();
                 }
             },

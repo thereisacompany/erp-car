@@ -214,6 +214,36 @@ server.GetDriverReport = function(wObj, callback) {
 
 
 
+server.UpdateDeliveryAgreed = function(wObj, callback) {
+    // 配送單-約配日修改
+    // POST /api/frontend/delivery/agreed 
+
+    // {
+    //   "datetime": "2024-05-16 11:40:00",
+    //   "number": "S20240508180337995"
+    // }
+    let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
+    let datetime = dayjs(wObj.datetime).format("YYYY-MM-DD HH:mm:ss")
+
+    console.log(wObj.datetime, datetime)
+    let APIUrl = `/frontend/delivery/agreed`;
+
+    let data2 = { number, datetime };
+
+    server.post(APIUrl, data2)
+        .then((res) => {
+            if (res != null && res.data != null && res.data.code == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata)
+            }
+        }).catch(function(error) {
+            console.log("error", error);
+            return;
+        });
+
+}
+
+
 server.UpdateDeliveryFile = function(wObj, callback) {
     // 缺少送出修改內容(要保存上傳的照片)
 
