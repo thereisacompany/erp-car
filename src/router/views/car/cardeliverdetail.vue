@@ -619,9 +619,26 @@ tr.isDefault td {
                 </p>-->
                     <div class="sub-history" v-if="IsAgreedDateChange == true">
                       <span>日期:</span
-                      ><input type="date" v-model="NewAgreed.date" />
-                      <span>時間:</span
-                      ><input type="time" v-model="NewAgreed.time" />
+                      ><input
+                        type="date"
+                        :min="today"
+                        v-model="NewAgreed.date"
+                      />
+                      <span>時間:</span>
+                      <!-- <input
+                        type="time"
+                        :min="currentTime"
+                        v-model="NewAgreed.time"
+                        :disabled="!NewAgreed.date"
+                      /> -->
+                      <br />
+                      <a-time-picker
+                        :disabled="!NewAgreed.date"
+                        :disabledTime="disabledTime"
+                        v-model:value="NewAgreed.time"
+                        format="HH:mm"
+                      />
+
                       <div class="btn-group btn-group-sm btn-wrap">
                         <a
                           href="javascript:;"
@@ -958,10 +975,10 @@ tr.isDefault td {
 import dayjs from "dayjs";
 import { server } from "@/api";
 import common from "@/api/common";
-
+import { TimePicker } from "ant-design-vue";
 export default {
   setup() {},
-
+  components: { ATimePicker: TimePicker },
   data() {
     return {
       modelMsg: {
@@ -1009,6 +1026,8 @@ export default {
       showImageURL: "",
       showVideoURL: "",
       showImageModal: false,
+      today: dayjs().format("YYYY-MM-DD"),
+      currentTime: dayjs().format("YYYY-MM-DDThh:mm"),
     };
   },
   mounted() {
@@ -1034,6 +1053,12 @@ export default {
       // });
       this.GetData();
     });
+    // const now = new Date();
+    // const hours = String(now.getHours()).padStart(2, "0");
+    // const minutes = String(now.getMinutes()).padStart(2, "0");
+    // this.currentTime = `${hours}:${minutes}`;
+    // document.getElementById('timePicker').setAttribute('min', currentTime);
+    // console.log("currentTime", this.currentTime);
   },
   methods: {
     handleFileUpload: function () {
@@ -1328,20 +1353,22 @@ export default {
     ChangeAgreedDate() {
       if (this.DetailInfo.number == null || this.DetailInfo.number == "")
         return;
-      if (!common.IsDate(this.NewAgreed.date)) {
-        this.ShowMessage("修改約配日", "請選擇新的約配日期");
-        return;
-      }
-      if (!common.IsTime(this.NewAgreed.time + ":00")) {
-        this.ShowMessage("修改約配日", "請選擇新的約配時間");
-        return;
-      }
+      // if (!common.IsDate(this.NewAgreed.date)) {
+      //   this.ShowMessage("修改約配日", "請選擇新的約配日期");
+      //   return;
+      // }
+      // console.log("??", common.IsTime(this.NewAgreed.time + ":00"));
+      // if (!common.IsTime(this.NewAgreed.time + ":00")) {
+      //   this.ShowMessage("修改約配日", "請選擇新的約配時間");
+      //   return;
+      // }
 
       let wObj = {};
       wObj.number = this.DetailInfo.number;
-      wObj.datetime = `${dayjs(this.NewAgreed.date).format("YYYY-MM-DD")} ${
+      wObj.datetime = `${this.NewAgreed.date} ${dayjs(
         this.NewAgreed.time
-      }:00`;
+      ).format("hh:mm:ss")}`;
+      console.log("wObj.datetime ", wObj.datetime);
 
       server.UpdateDeliveryAgreed(wObj, (apRlt) => {
         if (apRlt != null && apRlt.msg == "操作成功") {
@@ -1420,6 +1447,31 @@ export default {
         data.shift();
       }
       this.setLocalStorage(data);
+    },
+    disabledTime() {
+      const now = dayjs();
+      const currentHour = now.hour();
+      const currentMinute = now.minute();
+      const currentSecond = now.second();
+
+      return {
+        disabledHours: () =>
+          Array.from({ length: 24 }, (_, i) => i).filter(
+            (hour) => hour < currentHour
+          ),
+        disabledMinutes: (selectedHour) =>
+          selectedHour === currentHour
+            ? Array.from({ length: 60 }, (_, i) => i).filter(
+                (minute) => minute < currentMinute
+              )
+            : [],
+        disabledSeconds: (selectedHour, selectedMinute) =>
+          selectedHour === currentHour && selectedMinute === currentMinute
+            ? Array.from({ length: 60 }, (_, i) => i).filter(
+                (second) => second < currentSecond
+              )
+            : [],
+      };
     },
   },
 };
