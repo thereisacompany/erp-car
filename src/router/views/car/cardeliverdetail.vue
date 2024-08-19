@@ -636,6 +636,7 @@ tr.isDefault td {
                         :disabled="!NewAgreed.date"
                         :disabledTime="disabledTime"
                         :minuteStep="30"
+                        :showNow="false"
                         v-model:value="NewAgreed.time"
                         format="HH:mm"
                       />
@@ -1372,13 +1373,9 @@ export default {
       console.log("wObj.datetime ", wObj.datetime);
 
       server.UpdateDeliveryAgreed(wObj, (apRlt) => {
+        console.log("apRlt ", apRlt);
         if (apRlt != null && apRlt.msg == "操作成功") {
-          this.ShowMessage(
-            "已修改約配日完成",
-            `日期: ${dayjs(this.NewAgreed.date).format("YYYY-MM-DD")}\n時間: ${
-              this.NewAgreed.time
-            }`
-          );
+          this.ShowMessage("已修改約配日完成", `日期: ${wObj.datetime}`);
           this.GetData();
         } else {
           this.ShowMessage("修改約配日", apRlt.message);
@@ -1454,25 +1451,36 @@ export default {
       const now = dayjs();
       const currentHour = now.hour();
       const currentMinute = now.minute();
-      const currentSecond = now.second();
       if (this.NewAgreed.date === dayjs().format("YYYY-MM-DD")) {
         return {
-          disabledHours: () =>
-            Array.from({ length: 24 }, (_, i) => i).filter(
+          disabledHours: () => {
+            // 如果当前时间已超过整点，禁用当前小时及之前的小时
+            if (currentMinute > 0) {
+              return Array.from({ length: 24 }, (_, i) => i).filter(
+                (hour) => hour <= currentHour
+              );
+            }
+            // 否则，只禁用之前的小时
+            return Array.from({ length: 24 }, (_, i) => i).filter(
               (hour) => hour < currentHour
-            ),
-          disabledMinutes: (selectedHour) =>
-            selectedHour === currentHour
-              ? Array.from({ length: 60 }, (_, i) => i).filter(
-                  (minute) => minute < currentMinute
-                )
-              : [],
-          disabledSeconds: (selectedHour, selectedMinute) =>
-            selectedHour === currentHour && selectedMinute === currentMinute
-              ? Array.from({ length: 60 }, (_, i) => i).filter(
-                  (second) => second < currentSecond
-                )
-              : [],
+            );
+          },
+          disabledMinutes: (selectedHour) => {
+            // 如果选中的小时是当前小时
+            if (selectedHour === currentHour) {
+              // 如果当前分钟已经超过 30 分钟
+              if (currentMinute > 30) {
+                // 禁用所有分钟
+                return Array.from({ length: 60 }, (_, i) => i);
+              }
+              // 否则，仅允许选择 00 和 30 分钟
+              return Array.from({ length: 60 }, (_, i) => i).filter(
+                (minute) => minute !== 0 && minute !== 30
+              );
+            }
+            // 否则，所有分钟都可选
+            return [];
+          },
         };
       } else {
         return {
