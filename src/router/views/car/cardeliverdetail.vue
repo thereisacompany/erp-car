@@ -635,6 +635,7 @@ tr.isDefault td {
                       <a-time-picker
                         :disabled="!NewAgreed.date"
                         :disabledTime="disabledTime"
+                        :minuteStep="30"
                         v-model:value="NewAgreed.time"
                         format="HH:mm"
                       />
@@ -1367,7 +1368,7 @@ export default {
       wObj.number = this.DetailInfo.number;
       wObj.datetime = `${this.NewAgreed.date} ${dayjs(
         this.NewAgreed.time
-      ).format("hh:mm:ss")}`;
+      ).format("HH:mm:ss")}`;
       console.log("wObj.datetime ", wObj.datetime);
 
       server.UpdateDeliveryAgreed(wObj, (apRlt) => {
