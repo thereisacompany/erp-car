@@ -1450,29 +1450,37 @@ export default {
       this.setLocalStorage(data);
     },
     disabledTime() {
+      console.log("date", this.NewAgreed.date);
       const now = dayjs();
       const currentHour = now.hour();
       const currentMinute = now.minute();
       const currentSecond = now.second();
-
-      return {
-        disabledHours: () =>
-          Array.from({ length: 24 }, (_, i) => i).filter(
-            (hour) => hour < currentHour
-          ),
-        disabledMinutes: (selectedHour) =>
-          selectedHour === currentHour
-            ? Array.from({ length: 60 }, (_, i) => i).filter(
-                (minute) => minute < currentMinute
-              )
-            : [],
-        disabledSeconds: (selectedHour, selectedMinute) =>
-          selectedHour === currentHour && selectedMinute === currentMinute
-            ? Array.from({ length: 60 }, (_, i) => i).filter(
-                (second) => second < currentSecond
-              )
-            : [],
-      };
+      if (this.NewAgreed.date === dayjs().format("YYYY-MM-DD")) {
+        return {
+          disabledHours: () =>
+            Array.from({ length: 24 }, (_, i) => i).filter(
+              (hour) => hour < currentHour
+            ),
+          disabledMinutes: (selectedHour) =>
+            selectedHour === currentHour
+              ? Array.from({ length: 60 }, (_, i) => i).filter(
+                  (minute) => minute < currentMinute
+                )
+              : [],
+          disabledSeconds: (selectedHour, selectedMinute) =>
+            selectedHour === currentHour && selectedMinute === currentMinute
+              ? Array.from({ length: 60 }, (_, i) => i).filter(
+                  (second) => second < currentSecond
+                )
+              : [],
+        };
+      } else {
+        return {
+          disabledHours: null,
+          disabledMinutes: null,
+          disabledSeconds: null,
+        };
+      }
     },
   },
 };
