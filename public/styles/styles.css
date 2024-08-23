@@ -1100,7 +1100,7 @@ input[type="radio"] {
 }
 
 .tf-balance-box .balance {
-  padding: 0px 16px 8px;
+  padding: 0px 10px;
   border-bottom: 1px solid #ededed;
 }
 
@@ -1112,7 +1112,7 @@ input[type="radio"] {
   text-align: end;
 }
 
-.tf-balance-box .balance .inner-right h3 {
+.tf-balance-box .balance .inner-right {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -1125,7 +1125,7 @@ input[type="radio"] {
 
 .tf-balance-box .balance .inner-right h3 span {
   margin-left: 2px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   font-weight: 500;
   color: #717171;
@@ -1202,7 +1202,7 @@ input[type="radio"] {
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -1319,7 +1319,7 @@ input[type="radio"] {
 .icon-notification1 span {
   font-family: "Plus Jakarta Sans", sans-serif;
   position: absolute;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 9px;
   color: #ffffff;
   width: 14px;
@@ -1411,7 +1411,7 @@ input[type="radio"] {
   top: 12px;
   right: 14px;
   color: #f2cc4d;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -1757,7 +1757,7 @@ input[type="radio"] {
   position: relative;
   box-shadow: 0px 8px 15px 0px rgba(24, 25, 27, 0.05);
   font-weight: 600;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
   color: #1e1e1e;
 }
@@ -1891,7 +1891,7 @@ input[type="radio"] {
 
 .tf-atm-card .heading a i {
   color: #ffffff;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .tf-atm-card h3 {
@@ -1907,7 +1907,7 @@ input[type="radio"] {
 }
 
 .tf-atm-card .bottom span {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -1961,7 +1961,7 @@ input[type="radio"] {
 }
 
 .noti-list .content-right .title span {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -2512,7 +2512,7 @@ input[type="radio"] {
 }
 
 .app-header .tf-topbar .user-info p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -2760,7 +2760,7 @@ input[type="radio"] {
 }
 
 .action-sheet-transfer p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -3133,7 +3133,7 @@ input[type="radio"] {
 
 .content-by-bank h3 a {
   font-weight: 600;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   color: #f2cc4d;
   display: flex;
@@ -3419,7 +3419,7 @@ input[type="radio"] {
 }
 
 .bill-content h3 a {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
   color: #999;
   background: #efefef;
@@ -3468,7 +3468,7 @@ input[type="radio"] {
 }
 
 .list-card-invoice .content-right a span {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
   font-weight: 400;
 }
@@ -3487,7 +3487,7 @@ input[type="radio"] {
 }
 
 .list-bill-view .content p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
   color: #1e1e1e;
   font-weight: 600;
@@ -3628,7 +3628,7 @@ input[type="radio"] {
 }
 
 .box-user p {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
   color: #1e1e1e;
   display: flex;
@@ -3673,7 +3673,7 @@ input[type="radio"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
   font-weight: 400;
   color: #1e1e1e;
@@ -4013,7 +4013,7 @@ input[type="radio"] {
 }
 
 .box-gift-card .desc li:last-child i {
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .box-gift-card .img-gift {
@@ -4063,7 +4063,7 @@ input[type="radio"] {
 }
 
 .box-gift-card.large .desc .name a {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .box-gift-card.large .desc .code {
@@ -4084,7 +4084,7 @@ input[type="radio"] {
 }
 
 .box-gift-card.large .desc li:last-child i {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .box-gift-card.large::after {
@@ -4108,7 +4108,7 @@ input[type="radio"] {
 .food-box .img-box span {
   position: absolute;
   width: 39px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 16px;
   padding: 2px 8px;
   border-top-left-radius: 8px;
@@ -4148,7 +4148,7 @@ input[type="radio"] {
 }
 
 .food-box .content .rating .list-star li {
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .food-box .content .rating .list-star li:last-child::before {
@@ -4159,7 +4159,7 @@ input[type="radio"] {
   display: flex;
   align-items: center;
   gap: 2px;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
   font-weight: 400;
 }
@@ -4339,7 +4339,7 @@ input[type="radio"] {
   padding: 2px 8px;
   background-color: #ea3434;
   color: #ffffff;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
   border-radius: 4px;
 }
@@ -4459,7 +4459,7 @@ input[type="radio"] {
 }
 
 .box-profile .inner .info p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 16px;
 }
 
@@ -4546,7 +4546,7 @@ input[type="radio"] {
 }
 
 .box-settings-profile.style1 .list-setting-profile p {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 20px;
   margin-top: 2px;

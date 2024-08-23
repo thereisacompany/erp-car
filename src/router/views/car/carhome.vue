@@ -227,7 +227,7 @@
                   <h3 class="text-center">{{ TotalInfo.all }}</h3>
                 </div>
               </div>
-              <div class="col-2 br-right">
+              <div class="col-3 br-right">
                 <div class="inner-left">
                   <p class="success_color text-center">已完成</p>
                   <h3 class="success_color text-center">
@@ -235,7 +235,7 @@
                   </h3>
                 </div>
               </div>
-              <div class="col-2 br-right">
+              <div class="col-3 br-right">
                 <div class="inner-left">
                   <p class="warning_color text-center">未完成</p>
                   <h3 class="warning_color text-center">
@@ -243,7 +243,7 @@
                   </h3>
                 </div>
               </div>
-              <div class="col-2 br-right">
+              <div class="col-3">
                 <div class="inner-left">
                   <p class="critical_color text-center">異常</p>
                   <h3 class="critical_color text-center">
@@ -251,7 +251,7 @@
                   </h3>
                 </div>
               </div>
-              <div class="col-3">
+              <div class="col">
                 <div class="inner-right">
                   <p>今天日期:</p>
                   <h3>
@@ -823,10 +823,13 @@ export default {
     },
     // 取得local storage紀錄塞回出貨單紀錄modal
     getLocalStorage() {
-      const item = localStorage.getItem("recode");
+      const item = localStorage.getItem(`recode-${this.User.UserID}`);
       if (item) {
         try {
-          this.recodeListData = JSON.parse(item);
+          const parsedItem = JSON.parse(item);
+          if (this.User.UserID == parsedItem.userId) {
+            this.recodeListData = parsedItem.recodeList;
+          }
         } catch (e) {
           console.error("Error parsing localStorage value", e);
         }
