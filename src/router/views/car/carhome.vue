@@ -823,10 +823,13 @@ export default {
     },
     // 取得local storage紀錄塞回出貨單紀錄modal
     getLocalStorage() {
-      const item = localStorage.getItem("recode");
+      const item = localStorage.getItem(`recode-${this.User.UserID}`);
       if (item) {
         try {
-          this.recodeListData = JSON.parse(item);
+          const parsedItem = JSON.parse(item);
+          if (this.User.UserID == parsedItem.userId) {
+            this.recodeListData = parsedItem.recodeList;
+          }
         } catch (e) {
           console.error("Error parsing localStorage value", e);
         }

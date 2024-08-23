@@ -1419,16 +1419,20 @@ export default {
         //console.log(jshdata)
         this.DriverReportList = jshdata;
       });
+
+      setTimeout(() => {
+        this.setUserId(this.User.UserID);
+      }, 500);
     },
     GetDataMore() {
       this.queryObj.pageSize = this.queryObj.pageSize * 2;
       this.GetData();
     },
     setLocalStorage(value) {
-      localStorage.setItem("recode", JSON.stringify(value));
+      localStorage.setItem(`recode-${this.User.UserID}`, JSON.stringify(value));
     },
     getLocalStorage() {
-      const item = localStorage.getItem("recode");
+      const item = localStorage.getItem(`recode-${this.User.UserID}`);
       if (item) {
         try {
           return JSON.parse(item);
@@ -1436,15 +1440,29 @@ export default {
           console.error("Error parsing localStorage value", e);
         }
       }
-      return [];
+      return { userId: null, recodeList: [] };
     },
     addDataToLocalStorage() {
-      let data = this.getLocalStorage();
-      data.push(this.DetailInfo);
-      if (data.length > 10) {
-        data.shift();
+      // 获取当前存储的对象
+      let storedData = this.getLocalStorage();
+      // 添加新的记录到 recodeList 数组
+      storedData.recodeList.push(this.DetailInfo);
+      // 限制 recodeList 数组长度为 10
+      if (storedData.recodeList.length > 10) {
+        storedData.recodeList.shift();
       }
-      this.setLocalStorage(data);
+      // 将更新后的对象重新存储到 localStorage
+      this.setLocalStorage(storedData);
+    },
+    setUserId(userId) {
+      // 获取当前存储的对象
+      let storedData = this.getLocalStorage();
+      // 设置 userId
+      storedData.userId = userId;
+
+      // 将更新后的对象重新存储到 localStorage
+      this.setLocalStorage(storedData);
+      this.addDataToLocalStorage();
     },
     disabledTime() {
       console.log("date", this.NewAgreed.date);
