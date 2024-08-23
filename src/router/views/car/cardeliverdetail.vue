@@ -293,7 +293,7 @@
   /* position: absolute;
   top: 1px;
   left: 80px; */
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .right-info-btn a {
