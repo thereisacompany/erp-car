@@ -289,21 +289,21 @@
   position: relative;
 }
 
-.right-info-btn {
+.actions {
   /* position: absolute;
   top: 1px;
   left: 80px; */
   font-size: 14px;
 }
 
-.right-info-btn a {
+.actions a {
   color: #888;
   margin-right: 10px;
 }
 
 .sub-history {
   background-color: #f8f8f8;
-  padding: 3px 3px;
+  padding: 8px;
   margin: 5px 0px;
   border: 1px solid #aaa;
   border-radius: 5px;
@@ -361,7 +361,31 @@ tr.isDefault td {
   /* 根据需要调整高度 */
   overflow-y: auto;
 }
+
+.delete-file {
+  position: absolute;
+  z-index: 9;
+  top: -12px;
+  right: -10px;
+}
+
+.phoneNum-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.start-time,
+.end-time {
+  width: 47%;
+}
 </style>
+
 <template>
   <div>
     <div class="app-header st1">
@@ -507,7 +531,12 @@ tr.isDefault td {
               </div>
               <div class="info">
                 <h4 class="fw_6">
-                  <a href="javascript:;" @click="SetOrderStatus(2)">接單領貨</a>
+                  <a
+                    href="javascript:;"
+                    @click="SetOrderStatus(2)"
+                    class="status-title"
+                    >接單領貨</a
+                  >
                 </h4>
                 <p>
                   {{ DetailInfo.depotList }}
@@ -526,95 +555,59 @@ tr.isDefault td {
                 <img src="images/icon/index_service6.png" style="width: 43px" />
               </div>
               <div class="info">
-                <h4
-                  class="fw_6"
-                  style="display: flex; justify-content: space-between"
-                >
-                  <a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a>
-                  <div class="right-info-btn">
-                    <a
-                      href="javascript:;"
-                      class="query-history"
-                      @click="
-                        IsAgreedDateHistory = false;
-                        IsAgreedDateChange = !IsAgreedDateChange;
-                        NewAgreed.date = '';
-                        NewAgreed.time = '';
-                      "
-                    >
-                      {{
-                        IsAgreedDateChange == true
-                          ? "取消修改約配日 ▲"
-                          : "修改約配日 ▼"
-                      }}
-                    </a>
-                    <a
-                      href="javascript:;"
-                      class="query-history"
-                      @click="
-                        IsAgreedDateChange = false;
-                        IsAgreedDateHistory = !IsAgreedDateHistory;
-                      "
-                    >
-                      {{
-                        IsAgreedDateHistory == true
-                          ? "關閉記錄 ▲"
-                          : "查詢記錄 ▼"
-                      }}
-                    </a>
-                  </div>
+                <h4 class="fw_6">
+                  <a
+                    href="javascript:;"
+                    @click="SetOrderStatus(3)"
+                    class="status-title"
+                    >聯絡中</a
+                  >
                 </h4>
-                <p>
-                  連絡電話: {{ DetailInfo.cellphone }}
-                  {{ DetailInfo.receiveName }}
-                </p>
-                <div
-                  style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <div class="close-recode" style="width: 90%">
-                    <!-- <h4 class="fw_6">
-                  <a href="javascript:;" @click="SetOrderStatus(3)">聯絡中</a>
-                  <div class="right-info-btn">
-                    <a
-                      href="javascript:;"
-                      class="query-history"
-                      @click="
-                        IsAgreedDateHistory = false;
-                        IsAgreedDateChange = !IsAgreedDateChange;
-                        NewAgreed.date = '';
-                        NewAgreed.time = '';
-                      "
-                    >
-                      {{
-                        IsAgreedDateChange == true
-                          ? "取消修改約配日 ▲"
-                          : "修改約配日 ▼"
-                      }}
-                    </a>
-                    <a
-                      href="javascript:;"
-                      class="query-history"
-                      @click="
-                        IsAgreedDateChange = false;
-                        IsAgreedDateHistory = !IsAgreedDateHistory;
-                      "
-                    >
-                      {{
-                        IsAgreedDateHistory == true
-                          ? "關閉記錄 ▲"
-                          : "查詢記錄 ▼"
-                      }}
-                    </a>
-                  </div>
-                </h4>
-                <p style="border: 1px solid red">
-                  連絡電話: {{ DetailInfo.cellphone }}
-                  {{ DetailInfo.receiveName }}
-                </p>-->
+                <div class="phoneNum-checkbox">
+                  <p>
+                    連絡電話: {{ DetailInfo.cellphone }}
+                    {{ DetailInfo.receiveName }}
+                  </p>
+                  <input
+                    type="checkbox"
+                    class="tf-checkbox circle-check"
+                    :checked="formatDeliveryStatus(3)"
+                    @click="SetOrderStatus(3)"
+                  />
+                </div>
+                <div class="actions">
+                  <a
+                    href="javascript:;"
+                    class="query-history"
+                    @click="
+                      IsAgreedDateHistory = false;
+                      IsAgreedDateChange = !IsAgreedDateChange;
+                      NewAgreed.date = '';
+                      NewAgreed.startTime = '';
+                      NewAgreed.endTime = '';
+                    "
+                  >
+                    {{
+                      IsAgreedDateChange == true
+                        ? "取消修改約配日 ▲"
+                        : "修改約配日 ▼"
+                    }}
+                  </a>
+                  <a
+                    href="javascript:;"
+                    class="query-history"
+                    @click="
+                      IsAgreedDateChange = false;
+                      IsAgreedDateHistory = !IsAgreedDateHistory;
+                    "
+                  >
+                    {{
+                      IsAgreedDateHistory == true ? "關閉記錄 ▲" : "查詢記錄 ▼"
+                    }}
+                  </a>
+                </div>
+                <div class="actions-content">
+                  <div class="close-recode">
                     <div class="sub-history" v-if="IsAgreedDateChange == true">
                       <span>日期:</span
                       ><input
@@ -631,11 +624,24 @@ tr.isDefault td {
                       /> -->
                       <br />
                       <a-time-picker
+                        class="start-time"
                         :disabled="!NewAgreed.date"
-                        :disabledTime="disabledTime"
+                        :disabledTime="() => disabledTime('start')"
                         :minuteStep="30"
                         :showNow="false"
-                        v-model:value="NewAgreed.time"
+                        v-model:value="NewAgreed.startTime"
+                        placeholder="開始時間"
+                        format="HH:mm"
+                      />
+                      <span>~</span>
+                      <a-time-picker
+                        class="end-time"
+                        :disabled="!NewAgreed.startTime"
+                        :disabledTime="() => disabledTime('end')"
+                        :minuteStep="30"
+                        :showNow="false"
+                        v-model:value="NewAgreed.endTime"
+                        placeholder="結束時間"
                         format="HH:mm"
                       />
 
@@ -677,15 +683,6 @@ tr.isDefault td {
                             <td>{{ a1.name }}</td>
                           </tr>
                         </tbody>
-                        <!-- <tr
-                        v-for="(a1, a1idx) in driver.agreedDelivery"
-                        :key="'agreed' + a1idx"
-                        :class="a1.isDefault == true ? 'isDefault' : ''"
-                      >
-                        <td>#{{ a1idx + 1 }}</td>
-                        <td>日期:{{ formatDateTime(a1.datetime) }}</td>
-                        <td>修改者:{{ a1.name }}</td>
-                      </tr> -->
                       </table>
                     </div>
                     <div class="btn-wrap" v-if="IsAgreedDateHistory == true">
@@ -698,27 +695,8 @@ tr.isDefault td {
                       >
                     </div>
                   </div>
-                  <input
-                    type="checkbox"
-                    class="tf-checkbox circle-check"
-                    :checked="formatDeliveryStatus(3)"
-                    @click="SetOrderStatus(3)"
-                  />
                 </div>
               </div>
-              <!-- <input
-                type="checkbox"
-                class="tf-checkbox circle-check"
-                :checked="formatDeliveryStatus(3)"
-                @click="SetOrderStatus(3)"
-              /> -->
-
-              <!-- <input
-                type="checkbox"
-                class="tf-checkbox circle-check"
-                :checked="formatDeliveryStatus(3)"
-                @click="SetOrderStatus(3)"
-              /> -->
             </li>
             <li class="tf-card-list medium bt-line">
               <div class="logo">
@@ -726,7 +704,12 @@ tr.isDefault td {
               </div>
               <div class="info">
                 <h4 class="fw_6">
-                  <a href="javascript:;" @click="SetOrderStatus(4)">配送中</a>
+                  <a
+                    href="javascript:;"
+                    @click="SetOrderStatus(4)"
+                    class="status-title"
+                    >配送中</a
+                  >
                 </h4>
                 <p>{{ DetailInfo.address }}</p>
               </div>
@@ -743,7 +726,12 @@ tr.isDefault td {
               </div>
               <div class="info">
                 <h4 class="fw_6">
-                  <a href="javascript:;" @click="SetOrderStatus(5)">配送完成</a>
+                  <a
+                    href="javascript:;"
+                    @click="SetOrderStatus(5)"
+                    class="status-title"
+                    >配送完成</a
+                  >
                 </h4>
                 <p>客戶完成簽收</p>
               </div>
@@ -817,7 +805,18 @@ tr.isDefault td {
               <h3 class="auth-line fw_8">相關照片/影片上傳</h3>
               <div class="tf-spacing-12"></div>
               <ul class="bank-box">
-                <li v-for="(f1, fidx) in fileList" :key="'file-' + fidx">
+                <li
+                  v-for="(f1, fidx) in fileList"
+                  :key="'file-' + fidx"
+                  style="position: relative"
+                >
+                  <a
+                    href="javascript:;"
+                    v-if="driver.status != 5"
+                    class="text-danger delete-file"
+                    @click="DeleteFile1(f1)"
+                    >&nbsp;<i class="bx bx-x" style="font-size: 25px"></i
+                  ></a>
                   <span class="bank-list">
                     <img
                       class="logo-bank"
@@ -840,19 +839,6 @@ tr.isDefault td {
                       {{ f1.split("/").pop() }}</a
                     >
                   </span>
-                  <a
-                    href="javascript:;"
-                    class="text-danger"
-                    @click="DeleteFile1(f1)"
-                    >&nbsp;<i class="bx bx-x"></i
-                  ></a>
-                  <a
-                    href="javascript:;"
-                    v-if="driver.status != 5"
-                    class="text-danger"
-                    @click="DeleteFile1(f1)"
-                    >&nbsp;<i class="bx bx-x"></i
-                  ></a>
                 </li>
               </ul>
             </div>
@@ -912,7 +898,7 @@ tr.isDefault td {
         </div>
         <div class="bottom" :class="modelMsg.IsAlert ? 'OneBottomBtn' : ''">
           <a
-            href="#"
+            href="javascript:void(0);"
             class="btn-hide-modal"
             :class="modelMsg.iscritical ? 'critical_color' : 'primary_color'"
             data-dismiss="modal"
@@ -1238,6 +1224,7 @@ export default {
       return "";
     },
     SetOrderStatusConfirm() {
+      console.log("確認");
       let orderStatus = this.modelMsg.data;
       if (!common.IsNumber(orderStatus)) return;
 
@@ -1388,14 +1375,21 @@ export default {
       //   this.ShowMessage("修改約配日", "請選擇新的約配時間");
       //   return;
       // }
-
       let wObj = {};
       wObj.number = this.DetailInfo.number;
       wObj.datetime = `${this.NewAgreed.date} ${dayjs(
-        this.NewAgreed.time
+        this.NewAgreed.startTime
       ).format("HH:mm:ss")}`;
-      console.log("wObj.datetime ", wObj.datetime);
 
+      if (this.NewAgreed.endTime) {
+        wObj.datetimeEnd = `${this.NewAgreed.date} ${dayjs(
+          this.NewAgreed.endTime
+        ).format("HH:mm:ss")}`;
+      }
+
+      console.log("wObj.datetime ", wObj.datetime);
+      console.log("wObj.datetimeEnd ", wObj.datetimeEnd);
+      console.log("wObj ", wObj);
       server.UpdateDeliveryAgreed(wObj, (apRlt) => {
         console.log("apRlt ", apRlt);
         if (apRlt != null && apRlt.msg == "操作成功") {
@@ -1488,47 +1482,82 @@ export default {
       this.setLocalStorage(storedData);
       this.addDataToLocalStorage();
     },
-    disabledTime() {
-      console.log("date", this.NewAgreed.date);
+    disabledTime(type) {
       const now = dayjs();
       const currentHour = now.hour();
       const currentMinute = now.minute();
-      if (this.NewAgreed.date === dayjs().format("YYYY-MM-DD")) {
+      const startTime = dayjs(this.NewAgreed.startTime, "HH:mm");
+      // 起始時間
+      if (type == "start") {
+        // 若日期為當日，disabled過去時間
+        if (this.NewAgreed.date === dayjs().format("YYYY-MM-DD")) {
+          return {
+            disabledHours: () => {
+              // 如果当前时间已超过整点，禁用当前小时及之前的小时
+              if (currentMinute > 0) {
+                return Array.from({ length: 24 }, (_, i) => i).filter(
+                  (hour) => hour <= currentHour
+                );
+              }
+              // 否则，只禁用之前的小时
+              return Array.from({ length: 24 }, (_, i) => i).filter(
+                (hour) => hour < currentHour
+              );
+            },
+            disabledMinutes: (selectedHour) => {
+              // 如果选中的小时是当前小时
+              if (selectedHour === currentHour) {
+                // 如果当前分钟已经超过 30 分钟
+                if (currentMinute > 30) {
+                  // 禁用所有分钟
+                  return Array.from({ length: 60 }, (_, i) => i);
+                }
+                // 否则，仅允许选择 00 和 30 分钟
+                return Array.from({ length: 60 }, (_, i) => i).filter(
+                  (minute) => minute !== 0 && minute !== 30
+                );
+              }
+              // 否则，所有分钟都可选
+              return [];
+            },
+          };
+        } else {
+          // 若日期為未來，不disabled
+          return {
+            disabledHours: null,
+            disabledMinutes: null,
+            disabledSeconds: null,
+          };
+        }
+      } else {
+        // 結束時間,不可早於開始時間
         return {
           disabledHours: () => {
-            // 如果当前时间已超过整点，禁用当前小时及之前的小时
-            if (currentMinute > 0) {
-              return Array.from({ length: 24 }, (_, i) => i).filter(
-                (hour) => hour <= currentHour
-              );
-            }
-            // 否则，只禁用之前的小时
-            return Array.from({ length: 24 }, (_, i) => i).filter(
-              (hour) => hour < currentHour
-            );
+            const startHour = startTime.hour();
+            const startMinute = startTime.minute();
+
+            return Array.from({ length: 24 }, (_, i) => i).filter((hour) => {
+              // 禁用早于startTime的小时
+              if (hour < startHour) return true;
+              // 如果当前时间已经超过整点，禁用当前小时及之前的小时
+              if (hour === startHour && startMinute > 30) return true;
+              return false;
+            });
           },
           disabledMinutes: (selectedHour) => {
-            // 如果选中的小时是当前小时
-            if (selectedHour === currentHour) {
-              // 如果当前分钟已经超过 30 分钟
-              if (currentMinute > 30) {
-                // 禁用所有分钟
-                return Array.from({ length: 60 }, (_, i) => i);
-              }
-              // 否则，仅允许选择 00 和 30 分钟
+            const startHour = startTime.hour();
+            const startMinute = startTime.minute();
+
+            if (selectedHour < startHour) {
+              return Array.from({ length: 60 }, (_, i) => i);
+            }
+            if (selectedHour === startHour) {
               return Array.from({ length: 60 }, (_, i) => i).filter(
-                (minute) => minute !== 0 && minute !== 30
+                (minute) => minute <= startMinute
               );
             }
-            // 否则，所有分钟都可选
             return [];
           },
-        };
-      } else {
-        return {
-          disabledHours: null,
-          disabledMinutes: null,
-          disabledSeconds: null,
         };
       }
     },
