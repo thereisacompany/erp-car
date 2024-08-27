@@ -5,7 +5,7 @@ const server = axios.create({
     baseURL: process.env.VUE_APP_API_URL //http://jslerp.ddns.net:9999/jshERP-boot/
 });
 
-server.interceptors.request.use(function(config) {
+server.interceptors.request.use(function (config) {
     // 在送出 request 之前可以在這裡攔截處理
     //console.log(config)
 
@@ -18,19 +18,19 @@ server.interceptors.request.use(function(config) {
     }
 
     return config;
-}, function(error) {
+}, function (error) {
     // 如果 request 出現 error
     // 可以在這裡攔截處理
     console.log(error)
     return Promise.reject(error);
 });
 
-server.interceptors.response.use(function(response) {
+server.interceptors.response.use(function (response) {
     // 回傳的 status code 在 2xx 區間會觸發這個函式
     // 可以在這裡拿到 response 做處理
     //console.log(response)
     return response;
-}, function(error) {
+}, function (error) {
     // 回傳的 status code 不在 2xx 區間會觸發這個函式
     // 可以在這裡拿到 response error 做處理
     console.log(error);
@@ -44,7 +44,7 @@ server.interceptors.response.use(function(response) {
 
 
 
-server.GetDepotHeadList = function(wObj, callback) {
+server.GetDepotHeadList = function (wObj, callback) {
     // /frontend/depotHead/list 派發列表
 
     let currentPage = common.IsNumber(wObj.currentPage) ? Number(wObj.currentPage) : 1;
@@ -68,14 +68,14 @@ server.GetDepotHeadList = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata.data)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
         });
 }
 
 
 
-server.GetDeliveryData = function(wObj, callback) {
+server.GetDeliveryData = function (wObj, callback) {
     // /api/frontend/getDeliveryData 取得配送單狀態
     let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
 
@@ -87,11 +87,11 @@ server.GetDeliveryData = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata.data)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
         });
 }
-server.GetDetailByNumber = function(wObj, callback) {
+server.GetDetailByNumber = function (wObj, callback) {
     // /api/frontend/getDetailByNumber 訂單資訊Detail
     let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
 
@@ -103,12 +103,12 @@ server.GetDetailByNumber = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata.data)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
         });
 }
 
-server.GetDetailList = function(wObj, callback) {
+server.GetDetailList = function (wObj, callback) {
     // /api/frontend/getDetailList 商品明细列表
     let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
 
@@ -120,11 +120,11 @@ server.GetDetailList = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata.data)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
         });
 }
-server.SetDeliveryAssign = function(wObj, callback) {
+server.SetDeliveryAssign = function (wObj, callback) {
     ///api/frontend/delivery/assign
     // 配送單號, required = true
     // String number
@@ -144,12 +144,12 @@ server.SetDeliveryAssign = function(wObj, callback) {
                 if (callback) callback(jshdata)
             }
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.log("error", error);
         });
 }
 
-server.SetOrderStatus = function(wObj, callback) {
+server.SetOrderStatus = function (wObj, callback) {
     let headerId = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
     let orderStatus = !common.IsNullOrEmpty(wObj.orderStatus) ? wObj.orderStatus : '';
 
@@ -164,12 +164,12 @@ server.SetOrderStatus = function(wObj, callback) {
                 if (callback) callback(jshdata)
             }
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.log("error", error);
         });
 }
 
-server.driverReport = function(wObj, callback) {
+server.driverReport = function (wObj, callback) {
     //司機回報功能api
     let detailId = !common.IsNullOrEmpty(wObj.detailId) ? wObj.detailId : '';
     let message = !common.IsNullOrEmpty(wObj.message) ? wObj.message : '';
@@ -183,12 +183,12 @@ server.driverReport = function(wObj, callback) {
                 if (callback) callback(jshdata)
             }
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.log("error", error);
         });
 }
 
-server.GetDriverReport = function(wObj, callback) {
+server.GetDriverReport = function (wObj, callback) {
     // 新增api -> 取得司機回報歷程功能 get
     // /jshERP-boot/depotHead/getDeliveryReport?headerId=62
     // headerId : 配送單id
@@ -204,7 +204,7 @@ server.GetDriverReport = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata.data)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
 
             return;
@@ -214,29 +214,31 @@ server.GetDriverReport = function(wObj, callback) {
 
 
 
-server.UpdateDeliveryAgreed = function(wObj, callback) {
+server.UpdateDeliveryAgreed = function (wObj, callback) {
     // 配送單-約配日修改
-    // POST /api/frontend/delivery/agreed 
+    // POST /api/frontend/delivery/agreed
 
     // {
     //   "datetime": "2024-05-16 11:40:00",
     //   "number": "S20240508180337995"
     // }
     let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
-    let datetime = dayjs(wObj.datetime).format("YYYY-MM-DD HH:mm:ss")
-
-    console.log(wObj.datetime, datetime)
+    let datetime = dayjs(wObj.datetime).format("YYYY-MM-DD HH:mm:ss");
+    let params = { number, datetime };
+    if (wObj.datetimeEnd) {
+        let datetimeEnd = dayjs(wObj.datetimeEnd).format("YYYY-MM-DD HH:mm:ss");
+        params['datetimeEnd'] = datetimeEnd;
+    }
+    console.log('params', params)
     let APIUrl = `/frontend/delivery/agreed`;
 
-    let data2 = { number, datetime };
-
-    server.post(APIUrl, data2)
+    server.post(APIUrl, params)
         .then((res) => {
             if (res != null && res.data != null && res.data.code == 200) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
             return;
         });
@@ -244,7 +246,7 @@ server.UpdateDeliveryAgreed = function(wObj, callback) {
 }
 
 
-server.UpdateDeliveryFile = function(wObj, callback) {
+server.UpdateDeliveryFile = function (wObj, callback) {
     // 缺少送出修改內容(要保存上傳的照片)
 
     // /api/frontend/delivery/file/update
@@ -263,14 +265,14 @@ server.UpdateDeliveryFile = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
             return;
         });
 
 }
 
-server.UploadFile1 = function(wObj, callback) {
+server.UploadFile1 = function (wObj, callback) {
 
     let biz = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
     let file = wObj.file
@@ -285,7 +287,7 @@ server.UploadFile1 = function(wObj, callback) {
                 let jshdata = res.data;
                 if (callback) callback(jshdata.data)
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("error", error);
             return;
         });
