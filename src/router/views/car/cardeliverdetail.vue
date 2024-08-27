@@ -362,8 +362,6 @@ tr.isDefault td {
   overflow-y: auto;
 }
 </style>
-
-
 <template>
   <div>
     <div class="app-header st1">
@@ -818,9 +816,8 @@ tr.isDefault td {
             <div class="wrap-banks mt-3">
               <h3 class="auth-line fw_8">相關照片/影片上傳</h3>
               <div class="tf-spacing-12"></div>
-
               <ul class="bank-box">
-                <li v-for="(f1, fidx) in filelist" :key="'file-' + fidx">
+                <li v-for="(f1, fidx) in fileList" :key="'file-' + fidx">
                   <span class="bank-list">
                     <img
                       class="logo-bank"
@@ -866,6 +863,7 @@ tr.isDefault td {
                   <p>新增上傳照片/影片 <i class="icon-plus fw_7"></i></p>
                   <input
                     type="file"
+                    id="uploadFile"
                     multiple=""
                     data-max_length="20"
                     class="upload__inputfile"
@@ -1016,7 +1014,7 @@ export default {
         reportList: [],
       },
       DriverReportList: [],
-      filelist: [],
+      fileList: [],
       DetailInfo: {},
       NewAgreed: {
         date: "",
@@ -1063,30 +1061,56 @@ export default {
     // console.log("currentTime", this.currentTime);
   },
   methods: {
-    handleFileUpload: function () {
-      //console.log("handleFileUpload")
-
-      for (let i = 0; i < this.$refs.file2.files.length; i++) {
-        let file1 = this.$refs.file2.files[i];
-        console.log(file1.size);
-        if (file1.size > 30720000) {
+    async handleFileUpload(event) {
+      // console.log("file", event.target.files);
+      const list = event.target.files;
+      for (let i = 0; i < list.length; i++) {
+        // console.log("list[i]", list[i]);
+        if (list[i].size > 30720000) {
           this.ShowMessage("檔案上傳錯誤", `檔案大小不可大於30MB`);
           return;
+        } else {
+          // console.log("name", list[i].name);
+          try {
+            const uploadPath = await server.UploadFile1({
+              biz: "driver",
+              file: list[i],
+            });
+            // console.log("uploadPath", uploadPath);
+            if (uploadPath != null) {
+              this.fileList.push(uploadPath);
+            }
+          } catch (error) {
+            console.error(`Error uploading file ${list[i].name}`, error);
+          }
         }
       }
 
-      for (let i = 0; i < this.$refs.file2.files.length; i++) {
-        let file1 = this.$refs.file2.files[i];
-        if (file1.size <= 30720000) {
-          server.UploadFile1({ biz: "driver", file: file1 }, (uploadPath) => {
-            if (uploadPath != null) {
-              this.filelist.push(uploadPath);
-            }
-          });
-        }
-      }
-      this.$refs.file2.value = "";
+      // console.log("fileList", this.fileList);
     },
+    // handleFileUpload: function () {
+    //   //console.log("handleFileUpload")
+    //   for (let i = 0; i < this.$refs.file2.files.length; i++) {
+    //     let file1 = this.$refs.file2.files[i];
+    //     console.log(file1.size);
+    //     if (file1.size > 30720000) {
+    //       this.ShowMessage("檔案上傳錯誤", `檔案大小不可大於30MB`);
+    //       return;
+    //     }
+    //   }
+
+    //   for (let i = 0; i < this.$refs.file2.files.length; i++) {
+    //     let file1 = this.$refs.file2.files[i];
+    //     if (file1.size <= 30720000) {
+    //       server.UploadFile1({ biz: "driver", file: file1 }, (uploadPath) => {
+    //         if (uploadPath != null) {
+    //           this.fileList.push(uploadPath);
+    //         }
+    //       });
+    //     }
+    //   }
+    //   this.$refs.file2.value = "";
+    // },
     GetAccessFile1(UrlPath1) {
       let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static${UrlPath1}`;
       return APIUrl;
@@ -1110,8 +1134,8 @@ export default {
       return false;
     },
     DeleteFile1(file1) {
-      const filteredArray = this.filelist.filter((obj) => !(obj === file1));
-      this.filelist = filteredArray;
+      const filteredArray = this.fileList.filter((obj) => !(obj === file1));
+      this.fileList = filteredArray;
     },
     playVideo() {
       const video = this.$refs.videoPlayer;
@@ -1292,7 +1316,7 @@ export default {
           this.modelMsg.iscritical = true;
           break;
       }
-      if (NewStatus == 5 && this.filelist.length == 0) {
+      if (NewStatus == 5 && this.fileList.length == 0) {
         this.modelMsg.title = `無法完成訂單`;
         this.modelMsg.msg = `此配送單未上傳檔案，無法完成訂單!`;
         this.modelMsg.IsActive = true;
@@ -1340,7 +1364,7 @@ export default {
       if (this.DetailInfo.id == null || this.DetailInfo.id == 0) return;
 
       server.UpdateDeliveryFile(
-        { headerId: this.DetailInfo.id, filePath: this.filelist.join(",") },
+        { headerId: this.DetailInfo.id, filePath: this.fileList.join(",") },
         (apRlt) => {
           console.log("aprlt", apRlt);
           if (apRlt != null && apRlt.msg == "操作成功") {
@@ -1400,9 +1424,9 @@ export default {
         this.driver.deliveryStatusList = jshdata.deliveryStatusList;
         this.driver.agreedDelivery = jshdata.agreedDelivery || [];
         if (this.driver.filePath == null || this.driver.filePath == "") {
-          this.filelist = [];
+          this.fileList = [];
         } else {
-          this.filelist = String(this.driver.filePath).split(",");
+          this.fileList = String(this.driver.filePath).split(",");
         }
       });
       server.GetDetailByNumber(this.queryObj, (jshdata) => {
