@@ -18,3 +18,5 @@ module.exports = {
         }
     },
 }
+
+console.log("Proxy Config:", module.exports.devServer.proxy);
