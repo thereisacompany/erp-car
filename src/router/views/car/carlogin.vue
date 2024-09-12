@@ -86,15 +86,11 @@ ul.main-list li {
   </div>
 </template>>
 <script>
-import { reactive } from "vue";
 import { server } from "@/api";
 import config from "../../../../vue.config";
 import md5 from "md5";
 import VConsole from "vconsole";
 import { Icon } from "@iconify/vue";
-const states = reactive({
-  deferredPrompt: null,
-});
 
 export default {
   data() {
@@ -107,20 +103,6 @@ export default {
   },
   components: { Icon },
   mounted() {
-    window.addEventListener("beforeInstallPrompt", (e) => {
-      e.preventDefault();
-      states.deferredPrompt = e;
-    });
-    window.addEventListener("appInstalled", () => {
-      states.deferredPrompt = null;
-    });
-    document.querySelector("#app").addEventListener("click", () => {
-      if (states.deferredPrompt) {
-        states.deferredPrompt.prompt();
-        states.deferredPrompt = null;
-      }
-    });
-
     //console.log("this.$route.query.vConsole=", process.env.NODE_ENV)
     localStorage.removeItem("user");
     if (this.$route.query.vConsole == "1") {
