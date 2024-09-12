@@ -86,11 +86,15 @@ ul.main-list li {
   </div>
 </template>>
 <script>
+import { reactive } from "vue";
 import { server } from "@/api";
 import config from "../../../../vue.config";
 import md5 from "md5";
 import VConsole from "vconsole";
 import { Icon } from "@iconify/vue";
+const states = reactive({
+  deferredPrompt: null,
+});
 
 export default {
   data() {
@@ -103,6 +107,20 @@ export default {
   },
   components: { Icon },
   mounted() {
+    window.addEventListener("beforeInstallPrompt", (e) => {
+      e.preventDefault();
+      states.deferredPrompt = e;
+    });
+    window.addEventListener("appInstalled", () => {
+      states.deferredPrompt = null;
+    });
+    document.querySelector("#app").addEventListener("click", () => {
+      if (states.deferredPrompt) {
+        states.deferredPrompt.prompt();
+        states.deferredPrompt = null;
+      }
+    });
+
     //console.log("this.$route.query.vConsole=", process.env.NODE_ENV)
     localStorage.removeItem("user");
     if (this.$route.query.vConsole == "1") {
@@ -163,7 +181,12 @@ export default {
                 this.$route.query.redirectFrom || { name: "default" }
               );
               return;
-            } else if (jshdata.msgTip == "user is not exist") {
+            } else if (
+              jshdata.msgTip == "user is not exist" &&
+              jshdata.msgTip != "user is black"
+            ) {
+              alert("此帳號不存在");
+            } else if (jshdata.msgTip != "user is black") {
               alert("此帳號已停用");
             } else {
               alert("登入失敗!");
