@@ -163,6 +163,8 @@ export default {
                 this.$route.query.redirectFrom || { name: "default" }
               );
               return;
+            } else if (jshdata.msgTip == "user is not exist") {
+              alert("此帳號已停用");
             } else {
               alert("登入失敗!");
               console.log("登入失敗", jshdata.msgTip);
