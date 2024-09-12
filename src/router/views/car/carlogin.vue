@@ -168,7 +168,7 @@ export default {
               jshdata.msgTip != "user is black"
             ) {
               alert("此帳號不存在");
-            } else if (jshdata.msgTip != "user is black") {
+            } else if (jshdata.msgTip == "user is black") {
               alert("此帳號已停用");
             } else {
               alert("登入失敗!");
