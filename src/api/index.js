@@ -223,14 +223,16 @@ server.UpdateDeliveryAgreed = function (wObj, callback) {
     //   "number": "S20240508180337995"
     // }
     let number = !common.IsNullOrEmpty(wObj.number) ? wObj.number : '';
-    let datetime = dayjs(wObj.datetime).format("YYYY-MM-DD HH:mm:ss")
-
-    console.log(wObj.datetime, datetime)
+    let datetime = dayjs(wObj.datetime).format("YYYY-MM-DD HH:mm:ss");
+    let params = { number, datetime };
+    if (wObj.datetimeEnd) {
+        let datetimeEnd = dayjs(wObj.datetimeEnd).format("YYYY-MM-DD HH:mm:ss");
+        params['datetimeEnd'] = datetimeEnd;
+    }
+    console.log('params', params)
     let APIUrl = `/frontend/delivery/agreed`;
 
-    let data2 = { number, datetime };
-
-    server.post(APIUrl, data2)
+    server.post(APIUrl, params)
         .then((res) => {
             if (res != null && res.data != null && res.data.code == 200) {
                 let jshdata = res.data;
@@ -270,29 +272,25 @@ server.UpdateDeliveryFile = function (wObj, callback) {
 
 }
 
+server.UploadFile1 = function (wObj, callback) {
 
-server.UploadFile1 = function (wObj) {
-    return new Promise((resolve, reject) => {
-        let biz = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
-        let file = wObj.file;
+    let biz = !common.IsNullOrEmpty(wObj.headerId) ? wObj.headerId : '';
+    let file = wObj.file
 
-        let APIUrl = `/systemConfig/upload`;
-        const formData = new FormData();
-        formData.append('biz', biz);
-        formData.append('file', file);
+    let APIUrl = `/systemConfig/upload`;
+    const formData = new FormData();
+    formData.append('biz', biz);
+    formData.append('file', file);
+    server.post(APIUrl, formData)
+        .then((res) => {
+            if (res != null && res.data != null && res.data.code == 200) {
+                let jshdata = res.data;
+                if (callback) callback(jshdata.data)
+            }
+        }).catch(function (error) {
+            console.log("error", error);
+            return;
+        });
 
-        server.post(APIUrl, formData)
-            .then((res) => {
-                if (res != null && res.data != null && res.data.code == 200) {
-                    let jshdata = res.data;
-                    resolve(jshdata.data);  // 將結果回傳
-                } else {
-                    reject(new Error('Upload failed or server error'));
-                }
-            })
-            .catch(function (error) {
-                reject(error);
-            });
-    });
 }
 export { server };

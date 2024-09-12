@@ -303,7 +303,7 @@
 
 .sub-history {
   background-color: #f8f8f8;
-  padding: 8px;
+  padding: 5px;
   margin: 5px 0px;
   border: 1px solid #aaa;
   border-radius: 5px;
@@ -337,6 +337,7 @@ table th {
   margin: 0px;
   text-align: left;
   vertical-align: middle;
+  font-size: 14px;
 }
 
 td {
@@ -679,7 +680,7 @@ tr.isDefault td {
                             :class="a1.isDefault == true ? 'isDefault' : ''"
                           >
                             <th scope="row">{{ a1idx + 1 }}</th>
-                            <td>{{ formatDateTime(a1.datetime) }}</td>
+                            <td>{{ a1.datetime }}</td>
                             <td>{{ a1.name }}</td>
                           </tr>
                         </tbody>
@@ -1393,7 +1394,12 @@ export default {
       server.UpdateDeliveryAgreed(wObj, (apRlt) => {
         console.log("apRlt ", apRlt);
         if (apRlt != null && apRlt.msg == "操作成功") {
-          this.ShowMessage("已修改約配日完成", `日期: ${wObj.datetime}`);
+          this.ShowMessage(
+            "已修改約配日完成",
+            wObj.datetimeEnd
+              ? `約配時間： ${wObj.datetime} ~ ${wObj.datetimeEnd}`
+              : `約配時間： ${wObj.datetime}`
+          );
           this.GetData();
         } else {
           this.ShowMessage("修改約配日", apRlt.message);
