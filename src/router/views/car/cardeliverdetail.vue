@@ -1059,14 +1059,40 @@ export default {
         } else {
           // console.log("name", list[i].name);
           try {
-            const uploadPath = await server.UploadFile1({
+            // const uploadPath = await server.UploadFile1({
+            //   biz: "driver",
+            //   file: list[i],
+            // });
+            // // console.log("uploadPath", uploadPath);
+            // if (uploadPath != null) {
+            //   this.fileList.push(uploadPath);
+            // }
+            const fileData = {
               biz: "driver",
               file: list[i],
-            });
-            // console.log("uploadPath", uploadPath);
-            if (uploadPath != null) {
-              this.fileList.push(uploadPath);
-            }
+            };
+            let biz = !common.IsNullOrEmpty(fileData.headerId)
+              ? fileData.headerId
+              : "";
+            let file = fileData.file;
+
+            let APIUrl = `/systemConfig/upload`;
+            const formData = new FormData();
+            formData.append("biz", biz);
+            formData.append("file", file);
+            server
+              .post(APIUrl, formData)
+              .then((res) => {
+                if (res != null && res.data != null && res.data.code == 200) {
+                  let jshdata = res.data;
+                  console.log("jshdata", jshdata.data);
+                  this.fileList.push(jshdata.data);
+                }
+              })
+              .catch(function (error) {
+                console.log("error", error);
+                return;
+              });
           } catch (error) {
             console.error(`Error uploading file ${list[i].name}`, error);
           }
