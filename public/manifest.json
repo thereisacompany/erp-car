@@ -1,8 +1,8 @@
 {
   "name": "鉅生物流 司機配送系統",
-  "short_name": "鉅生物流 司機",
+  "short_name": "",
   "theme_color": "#f2cc4d",
-  "background_color": "#ffffff",
+  "background_color": "#f2cc4d",
   "display": "standalone",
   "scope": "/",
   "id": "/index.html",

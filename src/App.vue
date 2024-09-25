@@ -13,11 +13,7 @@
     href="_manifest.json"
     data-pwa-version="set_in_manifest_and_pwa_js"
   />
-  <link
-    rel="apple-touch-icon"
-    sizes="192x192"
-    href="app/icons/icon-192x192.png"
-  />
+
   <PageLoading />
 
   <router-view :key="$route.fullPath"></router-view>

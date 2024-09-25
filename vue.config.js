@@ -42,7 +42,7 @@ module.exports = {
     start_url: "/login",
     id: "/",
     display: "standalone",
-    background_color: "#fff",
+    background_color: "#f2cc4d",
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
     workboxPluginMode: 'InjectManifest',
