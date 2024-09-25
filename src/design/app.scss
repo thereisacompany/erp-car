@@ -1,11 +1,13 @@
-/*
-Template Name: Skote - Admin & Dashboard Template
-Author: Themesbrand
-Version: 3.0.0
-Website: https://themesbrand.com/
-Contact: themesbrand@gmail.com
-File: Main Css File
-*/
+/**
+ * Template Name: Skote - Admin & Dashboard Template
+ * Author: Themesbrand
+ * Version: 3.0.0
+ * Website: https://themesbrand.com/
+ * Contact: themesbrand@gmail.com
+ * File: Main Css File
+ *
+ * @format
+ */
 
 //Fonts
 @import "custom/fonts/fonts";
@@ -20,7 +22,7 @@ File: Main Css File
 @import "icons";
 
 // Structure
-@import "custom/structure/general";
+// @import "custom/structure/general";
 @import "custom/structure/topbar";
 @import "custom/structure/page-head";
 @import "custom/structure/footer";
