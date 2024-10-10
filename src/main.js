@@ -18,17 +18,20 @@ import '@vueform/slider/themes/default.css';
 import store from "./state/store";
 
 import "../src/design/app.scss";
+import './registerServiceWorker'
 
 createApp(App)
-    .component('PageLoading', PageLoading)
-    .use(store)
-    .use(router)
-    .use(require('vue-chartist'))
-    .use(BootstrapVue3)
-    .use(VueApexCharts)
-    .use(vClickOutside)
-    .use(i18n)
-    .use(registerScrollSpy)
-    .use(Maska)
-    .mount('#app')
+  .component('PageLoading', PageLoading)
+  .use(store)
+  .use(router)
+  .use(require('vue-chartist'))
+  .use(BootstrapVue3)
+  .use(VueApexCharts)
+  .use(vClickOutside)
+  .use(i18n)
+  .use(registerScrollSpy)
+  .use(Maska)
+  .mount('#app')
+
+
 

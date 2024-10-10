@@ -31,7 +31,10 @@ ul.main-list li {
         <img src="images/icon/logistic_contact.png" style="width: 60%" />
       </p>
       <form class="tf-form mt-5">
-        <h1 class="text-center">貨物配發派送</h1>
+        <div class="d-flex align-items-end mb-5">
+          <h1 class="text-center m-0">貨物配發派送</h1>
+          <h3 class="ms-3">v{{ version }}</h3>
+        </div>
         <div class="group-input">
           <label>員工代碼</label>
           <input type="text" placeholder="eg:0912345678" v-model="loginName" />
@@ -51,7 +54,7 @@ ul.main-list li {
             @click="toggleSeePassword"
           />
         </div>
-        <a href="#" class="auth-forgot-password mt-3">登入出現問題? </a>
+        <!-- <a href="#" class="auth-forgot-password mt-3">登入出現問題? </a> -->
         <button
           onclick="return false"
           class="tf-btn accent large"
@@ -91,7 +94,7 @@ import config from "../../../../vue.config";
 import md5 from "md5";
 import VConsole from "vconsole";
 import { Icon } from "@iconify/vue";
-
+import { version } from "../../../../package.json";
 export default {
   data() {
     return {
@@ -99,6 +102,7 @@ export default {
       loginName: "",
       password: "",
       seePassword: false,
+      version,
     };
   },
   components: { Icon },
@@ -163,6 +167,13 @@ export default {
                 this.$route.query.redirectFrom || { name: "default" }
               );
               return;
+            } else if (
+              jshdata.msgTip == "user is not exist" &&
+              jshdata.msgTip != "user is black"
+            ) {
+              alert("此帳號不存在");
+            } else if (jshdata.msgTip == "user is black") {
+              alert("此帳號已停用");
             } else {
               alert("登入失敗!");
               console.log("登入失敗", jshdata.msgTip);
