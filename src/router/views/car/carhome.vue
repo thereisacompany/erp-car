@@ -518,10 +518,10 @@
               >
                 <div class="icon"><img src="images/user/user1.jpg" /></div>
                 <div class="content" @click="GoDetail(recode)">
-                  <h4 class="fw_6">{{ getStatus(recode.status) }}</h4>
-                  <p style="margin: 0">
-                    出貨單單號: {{ recode.defaultNumber }}
-                  </p>
+                  <h4 class="fw_6">
+                    {{ formatdStatus(recode.status) }}
+                  </h4>
+                  <p style="margin: 0">出貨單單號: {{ recode.number }}</p>
                 </div>
               </a>
             </div>
@@ -789,6 +789,7 @@ export default {
       }
       server.GetDepotHeadList(this.queryObj, (apData) => {
         this.DepotHeadList = apData.rows;
+        console.log("this.DepotHeadList", this.DepotHeadList);
         this.TotalInfo = apData.total;
         if (this.DepotHeadList.length == 1 && this.queryObj.keyword != "") {
           this.GoDetail(this.DepotHeadList[0]);
@@ -829,6 +830,7 @@ export default {
           const parsedItem = JSON.parse(item);
           if (this.User.UserID == parsedItem.userId) {
             this.recodeListData = parsedItem.recodeList;
+            console.log("recodeListData", this.recodeListData);
           }
         } catch (e) {
           console.error("Error parsing localStorage value", e);

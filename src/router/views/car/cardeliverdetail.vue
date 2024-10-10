@@ -1495,8 +1495,15 @@ export default {
     addDataToLocalStorage() {
       // 获取当前存储的对象
       let storedData = this.getLocalStorage();
+      // console.log("this.DetailInfo", this.DetailInfo);
+      // console.log("this.driver", this.driver);
+      const data = {
+        id: this.DetailInfo.id,
+        number: this.DetailInfo.number,
+        status: this.driver.status,
+      };
       // 添加新的记录到 recodeList 数组
-      storedData.recodeList.push(this.DetailInfo);
+      storedData.recodeList.push(data);
       // 限制 recodeList 数组长度为 10
       if (storedData.recodeList.length > 10) {
         storedData.recodeList.shift();
