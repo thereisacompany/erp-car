@@ -407,10 +407,10 @@ tr.isDefault td {
       <div class="wrap-card-detail mt-3">
         <div class="tf-container">
           <div class="tf-atm-card">
-            <div class="heading">
+            <!-- <div class="heading">
               <a><i class="icon-qr-code"></i></a>
               <a id="btn-popup-up"><i class="icon-user-outline"></i></a>
-            </div>
+            </div> -->
             <ol class="xprogress-bar mt-5">
               <li v-if="driver.status <= 1" class="is-active">
                 <span>未接單</span>
@@ -508,8 +508,11 @@ tr.isDefault td {
                 )"
                 :key="'materialsList' + nidx"
               >
-                {{ name1 }}
+                名稱：{{ name1 }}
               </p>
+              <p>數量：{{ DetailInfo.materialCount }}</p>
+              <p>型號：{{ DetailInfo.materialsModel }}</p>
+              <p>規格：{{ DetailInfo.materialsStandard }}</p>
             </div>
           </div>
           <div class="tf-spacing-12"></div>
@@ -518,8 +521,11 @@ tr.isDefault td {
               <img src="images/user/user1.jpg?update=1" alt="image" />
             </div>
             <div class="info">
+              <div></div>
               <h4 class="fw_6">客服提醒事項</h4>
               <p>{{ DetailInfo.remark }}&nbsp;</p>
+              <p>安裝方式：{{ DetailInfo.install }}&nbsp;</p>
+              <p>是否回收：{{ DetailInfo.recycle }}&nbsp;</p>
             </div>
           </div>
           <div class="tf-spacing-12"></div>
@@ -1495,8 +1501,15 @@ export default {
     addDataToLocalStorage() {
       // 获取当前存储的对象
       let storedData = this.getLocalStorage();
+      // console.log("this.DetailInfo", this.DetailInfo);
+      // console.log("this.driver", this.driver);
+      const data = {
+        id: this.DetailInfo.id,
+        number: this.DetailInfo.number,
+        status: this.driver.status,
+      };
       // 添加新的记录到 recodeList 数组
-      storedData.recodeList.push(this.DetailInfo);
+      storedData.recodeList.push(data);
       // 限制 recodeList 数组长度为 10
       if (storedData.recodeList.length > 10) {
         storedData.recodeList.shift();
