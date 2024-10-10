@@ -508,8 +508,11 @@ tr.isDefault td {
                 )"
                 :key="'materialsList' + nidx"
               >
-                {{ name1 }}
+                名稱：{{ name1 }}
               </p>
+              <p>數量：{{ DetailInfo.materialCount }}</p>
+              <p>型號：{{ DetailInfo.materialsModel }}</p>
+              <p>規格：{{ DetailInfo.materialsStandard }}</p>
             </div>
           </div>
           <div class="tf-spacing-12"></div>
