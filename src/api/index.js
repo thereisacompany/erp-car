@@ -1,11 +1,22 @@
 import axios from 'axios';
 import common from "@/api/common";
 import dayjs from 'dayjs';
+import router from '@/router/index'
+
 const server = axios.create({
     baseURL: process.env.VUE_APP_API_URL //http://jslerp.ddns.net:9999/jshERP-boot/
 });
 
+
+
 server.interceptors.request.use(function (config) {
+
+    if (navigator.onLine) {
+        console.log("api request success");
+    } else {
+        console.log("api request fail");
+        alert('執行失敗，請至網路順暢處重試')
+    }
     // 在送出 request 之前可以在這裡攔截處理
     //console.log(config)
 
@@ -34,8 +45,10 @@ server.interceptors.response.use(function (response) {
     // 回傳的 status code 不在 2xx 區間會觸發這個函式
     // 可以在這裡拿到 response error 做處理
     console.log(error);
+    alert('出現錯誤，請重新登入')
     //回傳錯誤時,清除己登入的資料,會自動回登入頁
     localStorage.removeItem("user");
+    router.push('/login');
     return Promise.reject(error);
 });
 

@@ -867,6 +867,9 @@ tr.isDefault td {
               </div>
               <div class="upload__img-wrap"></div>
             </div>
+            <span class="d-block w-full text-center" style="color: #dc3545"
+              >上傳完畢後，需按下送出修改</span
+            >
             <div class="upload__img-wrap"></div>
             <div class="mt-5 st2">
               <a
