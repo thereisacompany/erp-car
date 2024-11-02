@@ -37,7 +37,7 @@ ul.main-list li {
         </div>
         <div class="group-input">
           <label>員工代碼</label>
-          <input type="text" placeholder="eg:0912345678" v-model="loginName" />
+          <input type="text" placeholder="eg:JSXXXXX" v-model="loginName" />
         </div>
         <div class="group-input auth-pass-input last">
           <label>密碼</label>
