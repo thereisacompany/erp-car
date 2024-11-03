@@ -659,6 +659,22 @@ input::-webkit-input-placeholder {
   line-height: 22px;
 }
 
+.change-password-modal .ant-modal-footer button:first-of-type {
+  display: none;
+}
+
+.change-password-modal .ant-modal-footer button {
+  margin: 0 !important;
+}
+
+.change-password-modal .ant-form-item-label {
+  padding: 0;
+}
+
+.change-password-modal .ant-form-item {
+  margin-bottom: 12px !important;
+}
+
 textarea,
 input[type="text"],
 input[type="submit"],
