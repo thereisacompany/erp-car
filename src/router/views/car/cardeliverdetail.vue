@@ -1134,7 +1134,7 @@ export default {
     //   this.$refs.file2.value = "";
     // },
     GetAccessFile1(UrlPath1) {
-      let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static${UrlPath1}`;
+      let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static/${UrlPath1}`;
       return APIUrl;
     },
     CheckIsImage(ImageUrl) {
