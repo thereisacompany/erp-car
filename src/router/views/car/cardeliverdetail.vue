@@ -1339,13 +1339,13 @@ export default {
           this.modelMsg.iscritical = true;
           break;
       }
-      if (NewStatus == 5 && this.fileList.length == 0) {
-        this.modelMsg.title = `無法完成訂單`;
-        this.modelMsg.msg = `此配送單未上傳檔案，無法完成訂單!`;
-        this.modelMsg.IsActive = true;
-        this.modelMsg.IsAlert = true;
-        return;
-      }
+      // if (NewStatus == 5 && this.fileList.length == 0) {
+      //   this.modelMsg.title = `無法完成訂單`;
+      //   this.modelMsg.msg = `此配送單未上傳檔案，無法完成訂單!`;
+      //   this.modelMsg.IsActive = true;
+      //   this.modelMsg.IsAlert = true;
+      //   return;
+      // }
       this.modelMsg.IsActive = true;
       this.modelMsg.IsAlert = false;
       // $("#modalhome1").modal({ show: true });
