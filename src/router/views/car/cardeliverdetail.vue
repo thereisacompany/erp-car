@@ -828,7 +828,7 @@ tr.isDefault td {
                     <img
                       class="logo-bank"
                       v-if="CheckIsImage(f1)"
-                      :src="GetAccessFile1(f1)"
+                      :src="f1"
                       @click="ShowImage(f1)"
                     />
                     <img
@@ -1133,12 +1133,12 @@ export default {
     //   }
     //   this.$refs.file2.value = "";
     // },
-    GetAccessFile1(UrlPath1) {
-      let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static${UrlPath1}`;
-      return APIUrl;
-    },
+    // GetAccessFile1(UrlPath1) {
+    //   let APIUrl = `${process.env.VUE_APP_API_URL}/systemConfig/static/${UrlPath1}`;
+    //   return APIUrl;
+    // },
     CheckIsImage(ImageUrl) {
-      let filename = this.GetAccessFile1(ImageUrl);
+      let filename = ImageUrl;
       const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
       const extension = filename.slice(filename.lastIndexOf(".")).toLowerCase();
       if (imageExtensions.includes(extension)) {
@@ -1147,7 +1147,7 @@ export default {
       return false;
     },
     CheckIsVideo(ImageUrl) {
-      let filename = this.GetAccessFile1(ImageUrl);
+      let filename = ImageUrl;
       const imageExtensions = [".mp4", ".mov"];
       const extension = filename.slice(filename.lastIndexOf(".")).toLowerCase();
       if (imageExtensions.includes(extension)) {
@@ -1169,7 +1169,7 @@ export default {
       }
     },
     ShowImage(ImageUrl) {
-      let filename = this.GetAccessFile1(ImageUrl);
+      let filename = ImageUrl;
 
       const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp"];
       const extension = filename.slice(filename.lastIndexOf(".")).toLowerCase();
