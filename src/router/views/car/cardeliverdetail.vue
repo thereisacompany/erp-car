@@ -868,7 +868,7 @@ tr.isDefault td {
               <div class="upload__img-wrap"></div>
             </div>
             <span class="d-block w-full text-center" style="color: #dc3545"
-              >上傳完畢後，需按下送出修改</span
+              >上傳完畢後，需按下儲存照片/影片</span
             >
             <div class="upload__img-wrap"></div>
             <div class="mt-5 st2">
@@ -877,7 +877,7 @@ tr.isDefault td {
                 href="javascript:;"
                 id="btn-popup-down"
                 @click="UpdateDeliveryReport"
-                >送出修改</a
+                >儲存照片/影片</a
               >
             </div>
           </form>
