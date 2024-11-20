@@ -38,6 +38,7 @@
         "caniuse-lite": "^1.0.30001581",
         "chart.js": "^3.7.0",
         "click-outside-vue3": "^4.0.1",
+        "compressorjs": "^1.2.1",
         "core-js": "^3.6.5",
         "dayjs": "^1.11.7",
         "dropzone": "^6.0.0-beta.2",
