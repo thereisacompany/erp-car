@@ -810,8 +810,8 @@ tr.isDefault td {
             <div class="tf-spacing-12"></div>
             <div class="wrap-banks mt-3">
               <h3 class="auth-line fw_8">相關照片/影片上傳</h3>
-              <div class="tf-spacing-12"></div>
-              <ul class="bank-box">
+              <a-spin v-if="loading" :spinning="loading" />
+              <ul v-else class="bank-box">
                 <li
                   v-for="(f1, fidx) in fileList"
                   :key="'file-' + fidx"
@@ -971,10 +971,12 @@ tr.isDefault td {
 import dayjs from "dayjs";
 import { server } from "@/api";
 import common from "@/api/common";
-import { TimePicker } from "ant-design-vue";
+import { TimePicker, Spin } from "ant-design-vue";
+import Compressor from "compressorjs";
+
 export default {
   setup() {},
-  components: { ATimePicker: TimePicker },
+  components: { ATimePicker: TimePicker, ASpin: Spin },
   data() {
     return {
       modelMsg: {
@@ -1024,9 +1026,16 @@ export default {
       showImageModal: false,
       today: dayjs().format("YYYY-MM-DD"),
       currentTime: dayjs().format("YYYY-MM-DDThh:mm"),
+
+      originalSize: null,
+      compressedSize: null,
+      originalImage: null,
+      compressedImage: null,
+      loading: false,
     };
   },
   mounted() {
+    this.loading = true;
     let user = localStorage.getItem("user");
     if (user == null) {
       return;
@@ -1048,6 +1057,7 @@ export default {
       //   console.log('onPlayerReady', this);
       // });
       this.GetData();
+      this.loading = false;
     });
     // const now = new Date();
     // const hours = String(now.getHours()).padStart(2, "0");
@@ -1057,56 +1067,98 @@ export default {
     // console.log("currentTime", this.currentTime);
   },
   methods: {
+    compressImage(file, quality = 0.6, maxWidth = 800, maxHeight = 800) {
+      return new Promise((resolve, reject) => {
+        new Compressor(file, {
+          quality: quality, // 設置圖像質量
+          maxWidth: maxWidth, // 最大寬度
+          maxHeight: maxHeight, // 最大高度
+          success(result) {
+            // 使用原始文件名和类型
+            const resFile = new File([result], file.name, {
+              type: file.type,
+              lastModified: Date.now(),
+            });
+            resolve(resFile);
+          },
+          error(error) {
+            reject(error);
+          },
+        });
+      });
+    },
     async handleFileUpload(event) {
-      // console.log("file", event.target.files);
+      this.loading = true;
       const list = event.target.files;
-      for (let i = 0; i < list.length; i++) {
-        // console.log("list[i]", list[i]);
-        if (list[i].size > 30720000) {
-          this.ShowMessage("檔案上傳錯誤", `檔案大小不可大於30MB`);
-          return;
-        } else {
-          // console.log("name", list[i].name);
-          try {
-            // const uploadPath = await server.UploadFile1({
-            //   biz: "driver",
-            //   file: list[i],
-            // });
-            // // console.log("uploadPath", uploadPath);
-            // if (uploadPath != null) {
-            //   this.fileList.push(uploadPath);
-            // }
-            const fileData = {
-              biz: "driver",
-              file: list[i],
-            };
-            let biz = !common.IsNullOrEmpty(fileData.headerId)
-              ? fileData.headerId
-              : "";
-            let file = fileData.file;
 
-            let APIUrl = `/systemConfig/upload`;
-            const formData = new FormData();
-            formData.append("biz", biz);
-            formData.append("file", file);
-            server
-              .post(APIUrl, formData)
-              .then((res) => {
-                if (res != null && res.data != null && res.data.code == 200) {
-                  let jshdata = res.data;
-                  console.log("jshdata", jshdata.data);
-                  this.fileList.push(jshdata.data);
-                }
-              })
-              .catch(function (error) {
-                console.log("error", error);
-                return;
-              });
-          } catch (error) {
-            console.error(`Error uploading file ${list[i].name}`, error);
-          }
+      for (let i = 0; i < list.length; i++) {
+        // 處理圖像上傳事件
+        const file = list[i];
+        this.originalSize = `${(file.size / 1024).toFixed(2)} KB`;
+
+        try {
+          const compressFile = await this.compressImage(file);
+          console.log("compressFile", compressFile);
+          const formData = new FormData();
+          formData.append("file", compressFile);
+          let APIUrl = `/systemConfig/upload`;
+          await server
+            .post(APIUrl, formData)
+            .then((res) => {
+              console.log("res", res);
+              if (res != null && res.data != null && res.data.code == 200) {
+                let jshdata = res.data;
+                console.log("jshdata", jshdata.data);
+                this.fileList.push(jshdata.data);
+                this.loading = false;
+              }
+            })
+            .catch(function (error) {
+              console.log("error", error);
+              return;
+            });
+        } catch (error) {
+          console.error("error:", error.message);
         }
       }
+
+      // for (let i = 0; i < list.length; i++) {
+      //   if (list[i].size > 30720000) {
+      //     this.ShowMessage("檔案上傳錯誤", `檔案大小不可大於30MB`);
+      //     return;
+      //   } else {
+      //     try {
+      //       const fileData = {
+      //         biz: "driver",
+      //         file: list[i],
+      //       };
+      //       let biz = !common.IsNullOrEmpty(fileData.headerId)
+      //         ? fileData.headerId
+      //         : "";
+      //       let file = fileData.file;
+      //       let APIUrl = `/systemConfig/upload`;
+      //       const formData = new FormData();
+      //       formData.append("biz", biz);
+      //       formData.append("file", file);
+
+      //       await server
+      //         .post(APIUrl, formData)
+      //         .then((res) => {
+      //           if (res != null && res.data != null && res.data.code == 200) {
+      //             let jshdata = res.data;
+      //             console.log("jshdata", jshdata.data);
+      //             this.fileList.push(jshdata.data);
+      //           }
+      //         })
+      //         .catch(function (error) {
+      //           console.log("error", error);
+      //           return;
+      //         });
+      //     } catch (error) {
+      //       console.error(`Error uploading file ${list[i].name}`, error);
+      //     }
+      //   }
+      // }
 
       // console.log("fileList", this.fileList);
     },
@@ -1264,15 +1316,6 @@ export default {
       let orderStatus = this.modelMsg.data;
       if (!common.IsNumber(orderStatus)) return;
 
-      server.SetOrderStatus(
-        { headerId: this.DetailInfo.id, orderStatus: orderStatus },
-        (apRlt) => {
-          if (apRlt != null && apRlt.msg == "操作成功") {
-            this.CloseModal();
-            this.GetData();
-          }
-        }
-      );
       server.SetOrderStatus(
         { headerId: this.DetailInfo.id, orderStatus: orderStatus },
         (apRlt) => {
