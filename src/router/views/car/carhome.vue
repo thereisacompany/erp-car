@@ -405,20 +405,29 @@
                 a1.cellphone
               }}
             </p>
-            <ol
-              class="xprogress-bar mt-5"
-              :class="a1.dstatus == 5 ? 'doneok' : a1.dstatus == 6 ? 'bad' : ''"
-            >
-              <li :class="a1.dstatus >= 2 ? 'is-active' : ''">
+            <ol class="xprogress-bar mt-5" :class="progressStatus(a1.dstatus)">
+              <li
+                :class="a1.dstatus >= 2 ? 'is-active' : ''"
+                class="progress-step1"
+              >
                 <span>接單中</span>
               </li>
-              <li :class="a1.dstatus >= 3 ? 'is-active' : ''">
+              <li
+                :class="a1.dstatus >= 3 ? 'is-active' : ''"
+                class="progress-step2"
+              >
                 <span>聯絡中</span>
               </li>
-              <li :class="a1.dstatus >= 4 ? 'is-active' : ''">
+              <li
+                :class="a1.dstatus >= 4 ? 'is-active' : ''"
+                class="progress-step3"
+              >
                 <span>配送中</span>
               </li>
-              <li :class="a1.dstatus >= 5 ? 'is-active' : ''">
+              <li
+                :class="a1.dstatus >= 5 ? 'is-active' : ''"
+                class="progress-step4"
+              >
                 <span>配送完成</span>
               </li>
             </ol>
@@ -595,6 +604,7 @@ import { useHtml5QrCode } from "@/api/html5-qr-code";
 //import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 
 export default {
+  components: {},
   setup() {},
   data() {
     return {
@@ -724,6 +734,17 @@ export default {
         this.cameraSupported = false;
       }
     },
+    progressStatus(dStatus) {
+      switch (Number(dStatus)) {
+        case 5:
+          return "doneok";
+        case 6:
+          return "bad";
+        case 7:
+          return "invalid";
+        default:
+      }
+    },
     formatdStatusCSS(dStatus) {
       switch (Number(dStatus)) {
         case 0:
@@ -740,6 +761,8 @@ export default {
           return "success_color";
         case 6:
           return "critical_color";
+        case 7:
+          return "invalid_color";
         default:
           return "";
       }
@@ -760,7 +783,8 @@ export default {
           return "配送完成";
         case 6:
           return "配送異常";
-
+        case 7:
+          return "作廢";
         default:
           return dStatus;
       }

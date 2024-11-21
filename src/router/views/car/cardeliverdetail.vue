@@ -16,9 +16,16 @@
   font-weight: 600;
   white-space: nowrap;
   overflow: visible;
-  min-width: 0;
-  text-align: center;
+  min-width: 33%;
+  text-align: end;
   border-bottom: 2px solid var(--color-gray-disabled);
+}
+
+.xprogress-bar li:first-child {
+  min-width: 0 !important;
+}
+
+.xprogress-bar li:first-child span {
 }
 
 .xprogress-bar li:first-child,
@@ -39,8 +46,9 @@
   border-radius: 50%;
   border: 2px solid var(--color-white);
   position: absolute;
-  left: calc(50% - 6px);
+  /* left: calc(50% - 6px); */
   bottom: -6px;
+  right: 0;
   z-index: 3;
   transition: all 0.2s ease-in-out;
 }
@@ -154,6 +162,30 @@
 .bad .is-hovered:before {
   background-color: var(--color-white);
   border-color: var(--color-red);
+}
+
+.invalid {
+  border-bottom: 1px solid #343a40;
+}
+
+.invalid li {
+  color: #343a40;
+}
+
+.invalid li.is-complete:before {
+  background-color: #343a40;
+}
+
+.invalid .is-complete:not(:first-child):after,
+.invalid .is-active:not(:first-child):after {
+  border-bottom: 2px solid #343a40;
+}
+
+.invalid .is-active:before,
+.invalid li:hover:before,
+.invalid .is-hovered:before {
+  background-color: var(--color-white);
+  border-color: #343a40;
 }
 
 .doneok {
@@ -412,13 +444,21 @@ tr.isDefault td {
               <a id="btn-popup-up"><i class="icon-user-outline"></i></a>
             </div> -->
             <ol class="xprogress-bar mt-5">
-              <li v-if="driver.status <= 1" class="is-active">
+              <!-- <li v-if="driver.status <= 1" class="is-active">
                 <span>未接單</span>
+              </li> -->
+              <li :class="formatDriverStatus(2)" class="progress-step1">
+                <span>接單中</span>
               </li>
-              <li v-else :class="formatDriverStatus(2)"><span>接單中</span></li>
-              <li :class="formatDriverStatus(3)"><span>聯絡中</span></li>
-              <li :class="formatDriverStatus(4)"><span>配送中</span></li>
-              <li :class="formatDriverStatus(5)"><span>配送完成</span></li>
+              <li :class="formatDriverStatus(3)" class="progress-step2">
+                <span>聯絡中</span>
+              </li>
+              <li :class="formatDriverStatus(4)" class="progress-step3">
+                <span>配送中</span>
+              </li>
+              <li :class="formatDriverStatus(5)" class="progress-step4">
+                <span>配送完成</span>
+              </li>
             </ol>
             <h3 class="fw_6">
               <a href="javascript:;" class="white_color">

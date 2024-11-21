@@ -277,3 +277,19 @@ html[dir="rtl"] {
   top: 50%;
   margin: -20px 0 0 -20px;
 }
+
+.progress-step2::before,
+.progress-step3::before {
+  left: inherit !important;
+  right: 0 !important;
+}
+
+.progress-step2 span,
+.progress-step3 span {
+  position: absolute;
+  right: -15% !important;
+}
+
+.progress-step2::after {
+  left: 0 !important;
+}
