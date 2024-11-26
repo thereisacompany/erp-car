@@ -912,13 +912,20 @@ tr.isDefault td {
             >
             <div class="upload__img-wrap"></div>
             <div class="mt-5 st2">
-              <a
+              <!-- <a
                 class="tf-btn accent large"
                 href="javascript:;"
                 id="btn-popup-down"
                 @click="UpdateDeliveryReport"
                 >儲存照片/影片</a
+              > -->
+              <button
+                class="tf-btn accent large"
+                id="btn-popup-down"
+                @click="UpdateDeliveryReport"
               >
+                儲存照片/影片
+              </button>
             </div>
           </form>
         </div>
