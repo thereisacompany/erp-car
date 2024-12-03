@@ -12,9 +12,9 @@ const server = axios.create({
 server.interceptors.request.use(function (config) {
 
     if (navigator.onLine) {
-        console.log("api request success");
+        // console.log("api request success");
     } else {
-        console.log("api request fail");
+        // console.log("api request fail");
         alert('執行失敗，請至網路順暢處重試')
     }
     // 在送出 request 之前可以在這裡攔截處理
