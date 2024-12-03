@@ -5,8 +5,8 @@
   "background_color": "#f2cc4d",
   "display": "standalone",
   "scope": "/",
-  "id": "/index.html",
-  "start_url": "/index.html",
+  "id": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "./app_icon_72.png",
