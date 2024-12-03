@@ -25,11 +25,11 @@ export default {
   name: "App",
   setup() {
     onMounted(() => {
-      console.log("app.vue onMounted");
+      // console.log("app.vue onMounted");
 
       window.addEventListener("online", function () {
         // 有連接網路
-        console.log("online");
+        // console.log("online");
       });
 
       window.addEventListener("offline", function () {

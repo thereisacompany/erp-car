@@ -24,8 +24,8 @@ const router = createRouter({
 
 // Before each route evaluates...
 router.beforeEach((routeTo, routeFrom, next) => {
-    console.log("routeTo=", routeTo)
-    console.log("process.env.VUE_APP_DEFAULT_AUTH=", process.env.VUE_APP_DEFAULT_AUTH)
+    // console.log("routeTo=", routeTo)
+    // console.log("process.env.VUE_APP_DEFAULT_AUTH=", process.env.VUE_APP_DEFAULT_AUTH)
     if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
         // Check if auth is required on this route
         // (including nested routes).
@@ -58,7 +58,8 @@ router.beforeEach((routeTo, routeFrom, next) => {
         const publicPages = ['/login', '/register', '/forgot-password', '/car/login', '/car/home', '/car/profile'];
         const authpage = !publicPages.includes(routeTo.path);
         const loggeduser = localStorage.getItem('user');
-        console.log("authpage,loggeduser=", authpage, loggeduser)
+        // console.log("authpage,loggeduser=", authpage, loggeduser)
+
         if (authpage && !loggeduser) {
             if (String(routeTo.path).indexOf("/car") == 0) {
                 return next('/car/login');
@@ -66,7 +67,6 @@ router.beforeEach((routeTo, routeFrom, next) => {
                 return next('/login');
             }
         }
-
         next();
     }
 })

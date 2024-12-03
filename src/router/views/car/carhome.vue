@@ -667,10 +667,10 @@ export default {
       return dayjs().format("YYYY/MM/DD");
     },
     IsQueryToday() {
-      console.log(
-        "IsQueryToday",
-        this.queryObj.beginTime == dayjs().format("YYYY-MM-DD 00:00:00")
-      );
+      // console.log(
+      //   "IsQueryToday",
+      //   this.queryObj.beginTime == dayjs().format("YYYY-MM-DD 00:00:00")
+      // );
       if (this.queryObj.beginTime == dayjs().format("YYYY-MM-DD 00:00:00")) {
         return true;
       }
@@ -813,7 +813,6 @@ export default {
       }
       server.GetDepotHeadList(this.queryObj, (apData) => {
         this.DepotHeadList = apData.rows;
-        console.log("this.DepotHeadList", this.DepotHeadList);
         this.TotalInfo = apData.total;
         if (this.DepotHeadList.length == 1 && this.queryObj.keyword != "") {
           this.GoDetail(this.DepotHeadList[0]);
@@ -854,7 +853,7 @@ export default {
           const parsedItem = JSON.parse(item);
           if (this.User.UserID == parsedItem.userId) {
             this.recodeListData = parsedItem.recodeList;
-            console.log("recodeListData", this.recodeListData);
+            // console.log("recodeListData", this.recodeListData);
           }
         } catch (e) {
           console.error("Error parsing localStorage value", e);
