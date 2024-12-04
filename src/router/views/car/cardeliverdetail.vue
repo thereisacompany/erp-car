@@ -417,6 +417,13 @@ tr.isDefault td {
 .end-time {
   width: 47%;
 }
+
+.btn-primary.disable-agreed {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background-color: #c5d6ee !important;
+  border: 1px solid #c5d6ee !important;
+}
 </style>
 
 <template>
@@ -696,6 +703,7 @@ tr.isDefault td {
                         <a
                           href="javascript:;"
                           class="btn btn-primary"
+                          :class="disabledClickAgreed ? 'disable-agreed' : ''"
                           @click="ChangeAgreedDate()"
                           >確認</a
                         >
@@ -1079,6 +1087,7 @@ export default {
       originalImage: null,
       compressedImage: null,
       loading: false,
+      disabledClickAgreed: false,
     };
   },
   mounted() {
@@ -1112,6 +1121,20 @@ export default {
     // this.currentTime = `${hours}:${minutes}`;
     // document.getElementById('timePicker').setAttribute('min', currentTime);
     // console.log("currentTime", this.currentTime);
+  },
+  watch: {
+    NewAgreed: {
+      handler(newValue) {
+        const startTime = dayjs(newValue.startTime).format("HH:mm:ss");
+        const endTime = dayjs(newValue.endTime).format("HH:mm:ss");
+        if (startTime == "Invalid Date" || endTime == "Invalid Date") {
+          this.disabledClickAgreed = true;
+        } else {
+          this.disabledClickAgreed = false;
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     compressImage(file, quality = 0.6, maxWidth = 800, maxHeight = 800) {
@@ -1506,6 +1529,11 @@ export default {
       wObj.datetime = `${this.NewAgreed.date} ${dayjs(
         this.NewAgreed.startTime
       ).format("HH:mm:ss")}`;
+      if (wObj.datetime == "Invalid Date") {
+        this.disabledClickAgreed = true;
+        alert("請設定約配時間");
+        return;
+      }
 
       if (this.NewAgreed.endTime) {
         wObj.datetimeEnd = `${this.NewAgreed.date} ${dayjs(
@@ -1513,9 +1541,9 @@ export default {
         ).format("HH:mm:ss")}`;
       }
 
-      console.log("wObj.datetime ", wObj.datetime);
-      console.log("wObj.datetimeEnd ", wObj.datetimeEnd);
-      console.log("wObj ", wObj);
+      // console.log("wObj.datetime ", wObj.datetime);
+      // console.log("wObj.datetimeEnd ", wObj.datetimeEnd);
+      // console.log("wObj ", wObj);
       server.UpdateDeliveryAgreed(wObj, (apRlt) => {
         console.log("apRlt ", apRlt);
         if (apRlt != null && apRlt.msg == "操作成功") {
