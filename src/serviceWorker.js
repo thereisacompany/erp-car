@@ -1,4 +1,4 @@
-const cacheName = "erp-car-v1"; // 添加版本号，方便更新缓存
+const cacheName = "erp-car-v2"; // 添加版本号，方便更新缓存
 
 self.addEventListener("install", e => {
   e.waitUntil(
