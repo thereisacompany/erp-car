@@ -1,3 +1,5 @@
+// const { config } = require("vue/types/umd");
+let timeStamp = new Date().getTime();
 module.exports = {
   pluginOptions: {
     i18n: {
@@ -53,4 +55,17 @@ module.exports = {
       swSrc: './src/serviceWorker.js'
     }
   },
+  // 打包配置
+  configureWebpack: {
+    output: {
+      filename: `js/js[name].${timeStamp}.js`,
+      chunkFilename: `js/chunk.[id].${timeStamp}.js`,
+    }
+  },
+  css: {
+    extract: {
+      filename: `css/[name].${timeStamp}.css`,
+      chunkFilename: `css/chunk.[id].${timeStamp}.css`,
+    }
+  }
 }

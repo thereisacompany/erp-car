@@ -424,17 +424,40 @@ tr.isDefault td {
   background-color: #c5d6ee !important;
   border: 1px solid #c5d6ee !important;
 }
+
+.back-btn,
+.back-btn:hover {
+  padding: 0;
+  background-color: transparent;
+  border-color: transparent;
+  width: auto;
+  position: absolute;
+  top: 0;
+  left: 16px;
+  height: auto !important;
+}
 </style>
 
 <template>
   <div>
     <div class="app-header st1">
       <div class="tf-container">
-        <div class="tf-topbar d-flex justify-content-center align-items-center">
-          <a href="/" class="back-btn">
+        <div
+          class="d-flex justify-content-center align-items-center"
+          style="position: relative"
+        >
+          <button class="back-btn" @click="clickGoBack">
+            <i class="icon-left white_color"> </i>
+          </button>
+          <div
+            class="tf-topbar d-flex justify-content-center align-items-center"
+          >
+            <!-- <a href="/" class="back-btn">
             <i class="icon-left white_color"></i
-          ></a>
-          <h3 class="white_color">配送單號: {{ DetailInfo.number }}</h3>
+          ></a> -->
+
+            <h3 class="white_color">配送單號: {{ DetailInfo.number }}</h3>
+          </div>
         </div>
 
         <h1 class="text-center white_color mt-2">
@@ -1726,6 +1749,9 @@ export default {
           },
         };
       }
+    },
+    clickGoBack() {
+      this.$router.push({ path: "/", query: { t: Date.now() } });
     },
   },
 };

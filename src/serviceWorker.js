@@ -29,7 +29,6 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-
 self.addEventListener("fetch", event => {
   if (event.request.headers.get('accept').includes('text/html')) {
     return; // 不緩存 HTML 文件

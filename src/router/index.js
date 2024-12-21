@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-
+// import versionUpdate from "../libs/versionUpdate";
 import store from '@/state/store'
 import routes from './routes'
 
@@ -24,6 +24,7 @@ const router = createRouter({
 
 // Before each route evaluates...
 router.beforeEach((routeTo, routeFrom, next) => {
+    // versionUpdate.isNewVersion();
     // console.log("routeTo=", routeTo)
     // console.log("process.env.VUE_APP_DEFAULT_AUTH=", process.env.VUE_APP_DEFAULT_AUTH)
     if (process.env.VUE_APP_DEFAULT_AUTH === "firebase") {
