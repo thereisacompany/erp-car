@@ -1160,12 +1160,10 @@ export default {
     },
   },
   methods: {
-    compressImage(file, quality = 0.6, maxWidth = 800, maxHeight = 800) {
+    compressImage(file) {
+      console.log("compressImage");
       return new Promise((resolve, reject) => {
         new Compressor(file, {
-          quality: quality, // 設置圖像質量
-          maxWidth: maxWidth, // 最大寬度
-          maxHeight: maxHeight, // 最大高度
           success(result) {
             // 使用原始文件名和类型
             const resFile = new File([result], file.name, {
