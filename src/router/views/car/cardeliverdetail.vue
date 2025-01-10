@@ -1160,10 +1160,11 @@ export default {
     },
   },
   methods: {
-    compressImage(file) {
-      console.log("compressImage");
+    compressImage(file, quality = 0.8) {
+      console.log("壓縮");
       return new Promise((resolve, reject) => {
         new Compressor(file, {
+          quality,
           success(result) {
             // 使用原始文件名和类型
             const resFile = new File([result], file.name, {
@@ -1188,8 +1189,13 @@ export default {
         this.originalSize = `${(file.size / 1024).toFixed(2)} KB`;
 
         try {
-          const compressFile = await this.compressImage(file);
-          console.log("compressFile", compressFile);
+          // 1MB = 1024 * 1024 bytes
+          const compressFile =
+            file.size > 1024 * 1024 // 大於1MB時壓縮
+              ? await this.compressImage(file)
+              : file;
+
+          console.log("是否大於1MB:", file.size > 1024 * 1024);
           const formData = new FormData();
           formData.append("file", compressFile);
           let APIUrl = `/systemConfig/upload`;
