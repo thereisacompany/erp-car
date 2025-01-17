@@ -188,6 +188,10 @@
   background-color: var(--color-white);
   border-color: var(--color-green);
 }
+
+.invoice-item {
+  cursor: pointer;
+}
 </style>
 
 <template>
@@ -372,9 +376,9 @@
           <div class="logo">
             <img src="images/icon/service_icon1.png" />
           </div>
-          <div class="content-right">
+          <div class="content-right invoice-item" @click="GoDetail(a1)">
             <h4>
-              <a href="javascript:;" @click="GoDetail(a1)"
+              <a href="javascript:;"
                 >訂單編號: {{ a1.number }}
                 <span :class="formatdStatusCSS(a1.dstatus)">{{
                   formatdStatus(a1.dstatus)
