@@ -436,6 +436,39 @@ tr.isDefault td {
   left: 16px;
   height: auto !important;
 }
+
+.file-modal {
+  padding: 0 !important;
+}
+.modal-dialog {
+  height: 100%;
+}
+
+.modal {
+  padding: 20px !important;
+}
+
+.modal-body {
+  padding: 10px;
+}
+
+.close-btn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+}
+
+.thumbnail-list-video {
+  position: relative;
+}
+
+.thumbnail-list-video svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 </style>
 
 <template>
@@ -902,12 +935,37 @@ tr.isDefault td {
                       :src="f1"
                       @click="ShowImage(f1)"
                     />
-                    <img
+                    <!-- <img
                       class="logo-bank"
                       v-else-if="CheckIsVideo(f1)"
                       src="/images/playvideo.jpg"
                       @click="ShowImage(f1)"
-                    />
+                    /> -->
+                    <div
+                      v-else-if="CheckIsVideo(f1)"
+                      class="thumbnail-list-video"
+                      @click="ShowImage(f1)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="36"
+                        height="36"
+                        viewBox="0 0 32 32"
+                      >
+                        <path
+                          fill="none"
+                          d="M11 23a1 1 0 0 1-1-1V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788l-12 6A1 1 0 0 1 11 23"
+                        />
+                        <path
+                          fill="#fff"
+                          d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m7.447 14.895l-12 6A1 1 0 0 1 10 22V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788"
+                        />
+                      </svg>
+                      <video ref="videoPlayer" muted style="width: 80px">
+                        <source :src="f1" type="video/mp4" />
+                        您的瀏覽器不支援影片格式
+                      </video>
+                    </div>
                     <a
                       v-else
                       href="javascript:;"
@@ -1011,20 +1069,28 @@ tr.isDefault td {
       v-model="showImageModal"
       title="顯示圖片"
       title-class="text-black font-18"
-      body-class="p-3"
       centered
       hide-header
       hide-footer
+      class="file-modal"
     >
+      <div class="close-btn" @click="showImageModal = false">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="#dc3545"
+            d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z"
+          />
+        </svg>
+      </div>
       <form>
         <div class="row text-center">
           <div class="col-12" v-if="showImageURL != ''">
-            <img
-              :src="showImageURL"
-              max-width="100%"
-              max-height="100%"
-              style="max-width: 100%"
-            />
+            <img :src="showImageURL" max-height="100%" />
           </div>
           <div class="col-12" v-show="showVideoURL != ''">
             <video
@@ -1189,15 +1255,25 @@ export default {
         this.originalSize = `${(file.size / 1024).toFixed(2)} KB`;
 
         try {
-          // 1MB = 1024 * 1024 bytes
-          const compressFile =
-            file.size > 1024 * 1024 // 大於1MB時壓縮
-              ? await this.compressImage(file)
-              : file;
+          let fileToUpload;
+
+          // 判斷是否為影像檔案類型
+          const isImage = file.type.startsWith("image/");
+
+          if (isImage) {
+            // 如果檔案大小超過 1MB，則進行壓縮
+            fileToUpload =
+              file.size > 1024 * 1024 ? await this.compressImage(file) : file;
+            console.log("is image");
+          } else {
+            // 如果是影片檔案，直接上傳
+            fileToUpload = file;
+            console.log("is video");
+          }
 
           console.log("是否大於1MB:", file.size > 1024 * 1024);
           const formData = new FormData();
-          formData.append("file", compressFile);
+          formData.append("file", fileToUpload);
           let APIUrl = `/systemConfig/upload`;
           await server
             .post(APIUrl, formData)
