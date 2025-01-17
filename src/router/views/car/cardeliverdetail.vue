@@ -1275,23 +1275,18 @@ export default {
           const formData = new FormData();
           formData.append("file", fileToUpload);
           let APIUrl = `/systemConfig/upload`;
-          await server
-            .post(APIUrl, formData)
-            .then((res) => {
-              console.log("res", res);
-              if (res != null && res.data != null && res.data.code == 200) {
-                let jshdata = res.data;
-                console.log("jshdata", jshdata.data);
-                this.fileList.push(jshdata.data);
-                this.loading = false;
-              }
-            })
-            .catch(function (error) {
-              console.log("error", error);
-              return;
-            });
+          await server.post(APIUrl, formData).then((res) => {
+            console.log("res", res);
+            if (res != null && res.data != null && res.data.code == 200) {
+              let jshdata = res.data;
+              console.log("jshdata", jshdata.data);
+              this.fileList.push(jshdata.data);
+              this.loading = false;
+            }
+          });
         } catch (error) {
-          console.error("error:", error.message);
+          console.error("error from upload:", error);
+          alert("檔案上傳錯誤," + error);
         }
       }
 
