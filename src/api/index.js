@@ -40,12 +40,12 @@ server.interceptors.request.use(function (config) {
 server.interceptors.response.use(function (response) {
     // 回傳的 status code 在 2xx 區間會觸發這個函式
     // 可以在這裡拿到 response 做處理
-    //console.log(response)
+    console.log('api response', response)
     return response;
 }, function (error) {
     // 回傳的 status code 不在 2xx 區間會觸發這個函式
     // 可以在這裡拿到 response error 做處理
-    console.log(error);
+    console.log('api response error', error);
     alert('出現錯誤，請重新登入')
     //回傳錯誤時,清除己登入的資料,會自動回登入頁
     localStorage.removeItem("user");

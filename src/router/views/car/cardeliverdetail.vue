@@ -1247,6 +1247,11 @@ export default {
     },
     async handleFileUpload(event) {
       this.loading = true;
+
+      // 確認檔案最大可接受大小
+      const sizeLimit = await this.checkFileSizeLimit();
+      console.log("sizeLimit", sizeLimit);
+      const MBnumber = sizeLimit / (1024 * 1024);
       const list = event.target.files;
 
       for (let i = 0; i < list.length; i++) {
@@ -1263,12 +1268,12 @@ export default {
           if (isImage) {
             // 如果檔案大小超過 1MB，則進行壓縮
             fileToUpload =
-              file.size > 1024 * 1024 ? await this.compressImage(file) : file;
+              file.size > sizeLimit ? await this.compressImage(file) : file;
             console.log("is image");
           } else {
-            // 如果是影片檔案，檢查大小是否超過 50MB
-            if (file.size > 50 * 1024 * 1024) {
-              alert("檔案大小不可超過 50MB");
+            // 如果是影片檔案，檢查大小是否超過多少MB
+            if (file.size > sizeLimit) {
+              alert(`檔案大小不可超過 ${MBnumber}MB`);
               this.loading = false;
               return; // 終止上傳
             } else {
@@ -1277,7 +1282,7 @@ export default {
             }
           }
 
-          console.log("是否大於1MB:", file.size > 1024 * 1024);
+          console.log("是否大於10MB:", file.size > sizeLimit);
           const formData = new FormData();
           formData.append("file", fileToUpload);
           let APIUrl = `/systemConfig/upload`;
@@ -1291,7 +1296,7 @@ export default {
                 this.fileList.push(jshdata.data);
                 this.loading = false;
               } else {
-                alert(res.result);
+                alert(res);
               }
             })
             .catch((e) => {
@@ -1342,6 +1347,14 @@ export default {
       // }
 
       // console.log("fileList", this.fileList);
+    },
+    async checkFileSizeLimit() {
+      return await server.get("/systemConfig/fileSizeLimit").then((res) => {
+        console.log("res", res);
+        if (res.data.code == 200) {
+          return res.data.data;
+        }
+      });
     },
     // handleFileUpload: function () {
     //   //console.log("handleFileUpload")

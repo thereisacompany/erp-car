@@ -28,32 +28,31 @@ module.exports = {
       {
         src: "./app_icon_72.png",
         sizes: "72x72",
-        type: "image/png"
+        type: "image/png",
       },
       {
         src: "./app_icon_96.png",
         sizes: "96x96",
-        type: "image/png"
+        type: "image/png",
       },
       {
         src: "./app_icon_144.png",
         sizes: "144x144",
-        type: "image/png"
-      }
+        type: "image/png",
+      },
     ],
     start_url: "/login",
     id: "/",
     display: "standalone",
     background_color: "#f2cc4d",
-    appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: 'black',
-    workboxPluginMode: 'InjectManifest',
+    appleMobileWebAppCapable: "yes",
+    appleMobileWebAppStatusBarStyle: "black",
+    workboxPluginMode: "InjectManifest", // 自定義 SW 模式
     workboxOptions: {
-      importScripts: ['https://storage.googleapis.com/workbox-cdn/releases/5.1.4/workbox-sw.js'],
-      exclude: [/\.html$/],//html不进行service Worker缓存
-      // 自定义 Service Worker 文件的位置
-      swSrc: './src/serviceWorker.js',
-    }
+      importScripts: ["https://storage.googleapis.com/workbox-cdn/releases/5.1.4/workbox-sw.js"], // 引入 Workbox
+      exclude: [/\.html$/], // HTML 不緩存
+      swSrc: "./src/serviceWorker.js", // 指定自定義 Service Worker
+    },
   },
   // 打包配置
   configureWebpack: {
