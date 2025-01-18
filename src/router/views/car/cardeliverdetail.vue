@@ -961,7 +961,7 @@ tr.isDefault td {
                           d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m7.447 14.895l-12 6A1 1 0 0 1 10 22V10a1 1 0 0 1 1.447-.894l12 6a1 1 0 0 1 0 1.788"
                         />
                       </svg>
-                      <video ref="videoPlayer" muted style="width: 80px">
+                      <video muted style="width: 80px">
                         <source :src="f1" type="video/mp4" />
                         您的瀏覽器不支援影片格式
                       </video>
@@ -1266,26 +1266,39 @@ export default {
               file.size > 1024 * 1024 ? await this.compressImage(file) : file;
             console.log("is image");
           } else {
-            // 如果是影片檔案，直接上傳
-            fileToUpload = file;
-            console.log("is video");
+            // 如果是影片檔案，檢查大小是否超過 50MB
+            if (file.size > 50 * 1024 * 1024) {
+              alert("檔案大小不可超過 50MB");
+              this.loading = false;
+              return; // 終止上傳
+            } else {
+              fileToUpload = file;
+              console.log("is video");
+            }
           }
 
           console.log("是否大於1MB:", file.size > 1024 * 1024);
           const formData = new FormData();
           formData.append("file", fileToUpload);
           let APIUrl = `/systemConfig/upload`;
-          await server.post(APIUrl, formData).then((res) => {
-            console.log("res", res);
-            if (res != null && res.data != null && res.data.code == 200) {
-              let jshdata = res.data;
-              console.log("jshdata", jshdata.data);
-              this.fileList.push(jshdata.data);
-              this.loading = false;
-            }
-          });
+          await server
+            .post(APIUrl, formData)
+            .then((res) => {
+              console.log("res", res);
+              if (res != null && res.data != null && res.data.code == 200) {
+                let jshdata = res.data;
+                console.log("jshdata", jshdata.data);
+                this.fileList.push(jshdata.data);
+                this.loading = false;
+              } else {
+                alert(res.result);
+              }
+            })
+            .catch((e) => {
+              console.log("api error", e);
+            });
         } catch (error) {
-          console.error("error from upload:", error);
+          console.log("error from upload:", error);
           alert("檔案上傳錯誤," + error);
         }
       }

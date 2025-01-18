@@ -4,7 +4,8 @@ import dayjs from 'dayjs';
 import router from '@/router/index'
 
 const server = axios.create({
-    baseURL: process.env.VUE_APP_API_URL //http://jslerp.ddns.net:9999/jshERP-boot/
+    baseURL: process.env.VUE_APP_API_URL, //http://jslerp.ddns.net:9999/jshERP-boot/
+    timeout: 180000, // 延長timeout
 });
 
 
